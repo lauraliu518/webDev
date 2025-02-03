@@ -120,7 +120,7 @@ div{
     padding-left: 2vw;
     font-size: 1vw;
 }
-#linkedIn{
+#linkedIn, #git{
     color:#3D3D3D;
     text-decoration: none;
 }
