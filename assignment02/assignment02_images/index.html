@@ -33,7 +33,7 @@
             left: 20px;
             top: 100px;
             background-color: #ddd;
-            padding: 10px;
+            padding: 30px;
             border-radius: 20px;
         }
 
@@ -68,9 +68,9 @@
         let greetIndex;
         let luckyNumbers = [0, 0, 0];
 
-        // while(max < 3 || isNaN(max)){
-        //     max = prompt("Enter a number greater or equal to 3: ");
-        // }
+        while(max < 3 || isNaN(max)){
+            max = prompt("Enter a number greater or equal to 3: ");
+        }
 
         if(hour >= 12){
             if(hour >= 18){
@@ -88,12 +88,36 @@
             }
             apm = "am";
         }
+        // handle 5:2 case, add placeholder for 0s
 
-        luckyNumbers[0] = parseInt(Math.random() * (max-1));
+        //first lucky number
+        // luckyNumbers[0] = parseInt(Math.random() * (max-1));
+        // for (let i = 0; i < 3; i++){
+        //     let temp1 = parseInt(Math.random() * (max-1));
+        //     let temp2 = parseInt(Math.random() * (max-1));
+        //     let temp3 = parseInt(Math.random() * (max-1));
+        //     while(temp2)
+        //     if(temp != luckyNumbers[i-1]){
+        //         luckyNumbers[i] = temp;
+        //     }
+        // }
+        let temp1, temp2, temp3;
+        temp1 = parseInt(Math.random() * (max-1));
+        do{
+            temp2 = parseInt(Math.random() * (max-1));
+        }while(temp2 != temp1);
+        do{
+            temp2 = parseInt(Math.random() * (max-1));
+        }while(temp3 != temp1 && temp3 != temp2);
+        luckyNumbers[0] = temp1;
+        luckyNumbers[1] = temp2;
+        luckyNumbers[2] = temp3;
+
     
         document.write(`<div id="container">
                             <h1 id="title">Everything is ${greeting}</h1>
-                            <div id="time">The current tine is ${hour}:${min} ${apm} - Good ${greets[greetIndex]}!</div>
+                            <div id="time">The current time is ${hour}:${min} ${apm} - Good ${greets[greetIndex]}!</div>
+                            <div id="luckyNum">Your lucky numbers are ${luckyNumbers[0]}, ${luckyNumbers[1]}, and ${luckyNumbers[2]}.</div>
                             <img id="head" src="heads/head1.png"> 
                             <img id="body" src="bodies/body1.png"> 
                             <img id="bg" src="backgrounds/afternoon.png">
