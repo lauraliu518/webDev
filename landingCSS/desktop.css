@@ -98,14 +98,17 @@ div{
 .assignments{
     margin: 10px;
     background-color: #F5ECD5;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
 }
 .assignments:hover{
     background-color: #578E7E;
     color:#FFFAEC;
 }
-.assignments h2{
-    text-align: center;
-    font-size: 30px;
+.assignments img{
+    width: 30px;
+    height: 30px;
 }
 
 
