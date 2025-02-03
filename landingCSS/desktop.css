@@ -1,0 +1,124 @@
+body{
+    background-color: #FFFAEC;
+    color: #3D3D3D;
+
+}
+
+div{
+    font-family: monospace;
+    box-sizing: border-box;
+    margin: auto;
+    padding: 10px;
+    /* border: solid black 1px; */
+}
+
+
+
+/* Headline */
+#headline{
+    text-align: left;
+    background-color: #578E7E;
+    font-size: 20px;
+}
+#headline>h1{
+    padding-left: 2vw;
+    color:#F5ECD5;
+}
+
+
+
+/* Menu bar */
+.menuBar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-self: center;
+    column-gap: 10px;
+    background-color: #F5ECD5;
+    padding: 15px;
+}
+.menuItem a{
+    text-align: center;
+    font-size: 20px;
+    text-decoration: none;
+}
+.menuItem a:link{
+    color: #3D3D3D;
+    text-decoration: none;
+}
+.menuItem a:visited{
+    color: #3D3D3D;
+}
+.menuItem:hover{  /* hover to border but not content and trigger content hover*/
+    background-color: #578E7E;
+}
+.menuItem a:hover{
+    color: #FFFAEC;
+}
+
+
+
+/* Hero section */
+#heroHeadline{
+    /* border: solid red 1px; */
+    text-align: left;
+    font-size: 5vw;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 2vw;
+    padding-bottom: 0px;
+}
+#heroContent{
+    font-size: 20px;
+    padding-left: 2vw;
+    padding-right: 2vw;
+}
+
+
+
+/* Assignments Section */
+#assignmentTitle{
+    padding-left: 2vw;
+    padding-right: 2vw;
+    font-size: 20px;
+    background-color: #F5ECD5;
+}
+#assignmentSubtitle{
+    padding-left: 2vw;
+    padding-right: 2vw;
+    font-size: 15px;
+}
+.container {
+    padding-left: 2vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    column-gap: 5px;
+    padding: 5px;
+    margin-bottom: 30px;
+}
+.assignments{
+    margin: 10px;
+    background-color: #F5ECD5;
+}
+.assignments:hover{
+    background-color: #578E7E;
+    color:#FFFAEC;
+}
+.assignments h2{
+    text-align: center;
+    font-size: 30px;
+}
+
+
+
+/* Footer */
+.footerContainer{
+    display:grid;
+    text-align: left;
+    grid-template-columns: 2fr 1fr;
+    background-color: #F5ECD5;
+    padding-left: 2vw;
+}
+#linkedIn{
+    color:#3D3D3D;
+    text-decoration: none;
+}
