@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Greeting</title>
+    <style>
+        #container{
+            border: solid 1px black;
+            width: 800px;
+            height: 600px;
+            position: relative;
+            margin: auto;
+        }
+
+        #bg{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 0;
+        }
+
+        #title{
+            position: absolute;
+            z-index:1;
+            left: 20px;
+        }
+
+        #time{
+            position: absolute;
+            z-index: 1;
+            left: 20px;
+            top: 100px;
+            background-color: #ddd;
+            padding: 10px;
+            border-radius: 20px;
+        }
+
+        #head{
+            position: absolute;
+            z-index: 1;
+            right: 75px;
+            bottom: 275px;
+        }
+
+        #body{
+            position: absolute;
+            z-index: 1;
+            right: 0px;
+            bottom: 0px;
+        }
+
+    </style>
+</head>
+<body>
+    
+
+    <script>
+        const words = ['Awesome', 'Fantastic', 'Fabulous', 'Superb', 'Perfect', 'Brilliant', 'Coming up Roses'];
+        const greeting = words[parseInt(Math.random()*words.length)];
+        let time = new Date();
+        let hour = time.getHours();
+        let min = time.getMinutes();
+        let apm;
+        if(hour >= 12){
+            hour -= 12;
+            apm = "pm";
+            // check am pm and assing to apm
+        }else{
+            apm = "am";
+        }
+
+        // three lucky numbers random gene
+        document.write(`<div id="container">
+                            <h1 id="title">Everything is ${greeting}</h1>
+                            <div id="time">The current tine is ${hour}:${min} ${apm}</div>
+                            <img id="head" src="heads/head1.png"> 
+                            <img id="body" src="bodies/body1.png"> 
+                            <img id="bg" src="backgrounds/afternoon.png">
+                        </div>`);
+
+
+    </script>
+</body>
+</html>
