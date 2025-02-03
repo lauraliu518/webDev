@@ -63,18 +63,37 @@
         let hour = time.getHours();
         let min = time.getMinutes();
         let apm;
+        let max = prompt("Enter a number greater or equal to 3: ");
+        let greets = ["Night", "Morning", "Afternoon", "Evening"];
+        let greetIndex;
+        let luckyNumbers = [0, 0, 0];
+
+        // while(max < 3 || isNaN(max)){
+        //     max = prompt("Enter a number greater or equal to 3: ");
+        // }
+
         if(hour >= 12){
+            if(hour >= 18){
+                greetIndex = 3;
+            }else{
+                greetIndex = 2;
+            }
             hour -= 12;
             apm = "pm";
-            // check am pm and assing to apm
         }else{
+            if(hour >= 6){
+                greetIndex = 1;
+            }else{
+                greetIndex = 0;
+            }
             apm = "am";
         }
 
-        // three lucky numbers random gene
+        luckyNumbers[0] = parseInt(Math.random() * (max-1));
+    
         document.write(`<div id="container">
                             <h1 id="title">Everything is ${greeting}</h1>
-                            <div id="time">The current tine is ${hour}:${min} ${apm}</div>
+                            <div id="time">The current tine is ${hour}:${min} ${apm} - Good ${greets[greetIndex]}!</div>
                             <img id="head" src="heads/head1.png"> 
                             <img id="body" src="bodies/body1.png"> 
                             <img id="bg" src="backgrounds/afternoon.png">
