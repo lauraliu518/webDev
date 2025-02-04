@@ -103,12 +103,12 @@
         //     }
         // }
         let temp1, temp2, temp3;
-        temp1 = parseInt(Math.random() * (max-1))+1;
+        temp1 = parseInt(Math.random() * (max)) + 1;
         do{
-            temp2 = parseInt(Math.random() * (max-1))+1;
+            temp2 = parseInt(Math.random() * (max)) + 1;
         }while(temp2 == temp1);
         do{
-            temp3 = parseInt(Math.random() * (max-1))+1;
+            temp3 = parseInt(Math.random() * (max)) + 1;
         }while(temp3 == temp1 || temp3 == temp2);
         luckyNumbers[0] = temp1;
         luckyNumbers[1] = temp2;
