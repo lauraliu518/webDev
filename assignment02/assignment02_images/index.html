@@ -63,14 +63,15 @@
         let hour = time.getHours();
         let min = time.getMinutes();
         let apm;
-        let max = prompt("Enter a number greater or equal to 3: ");
+        let max;
         let greets = ["Night", "Morning", "Afternoon", "Evening"];
         let greetIndex;
         let luckyNumbers = [0, 0, 0];
 
-        while(max < 3 || isNaN(max)){
+        do{
             max = prompt("Enter a number greater or equal to 3: ");
-        }
+        }while( isNaN(max) || max < 3);
+
 
         if(hour >= 12){
             if(hour >= 18){
@@ -102,13 +103,13 @@
         //     }
         // }
         let temp1, temp2, temp3;
-        temp1 = parseInt(Math.random() * (max-1));
+        temp1 = parseInt(Math.random() * (max-1))+1;
         do{
-            temp2 = parseInt(Math.random() * (max-1));
-        }while(temp2 != temp1);
+            temp2 = parseInt(Math.random() * (max-1))+1;
+        }while(temp2 == temp1);
         do{
-            temp2 = parseInt(Math.random() * (max-1));
-        }while(temp3 != temp1 && temp3 != temp2);
+            temp3 = parseInt(Math.random() * (max-1))+1;
+        }while(temp3 == temp1 || temp3 == temp2);
         luckyNumbers[0] = temp1;
         luckyNumbers[1] = temp2;
         luckyNumbers[2] = temp3;
