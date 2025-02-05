@@ -7,7 +7,7 @@
     <title>Dynamic Greeting</title>
     <style>
         #container{
-            border: solid 1px black;
+            /* border: solid 1px black; */
             width: 800px;
             height: 600px;
             position: relative;
@@ -24,17 +24,19 @@
         #title{
             position: absolute;
             z-index:1;
-            left: 20px;
+            left: 40px;
+            top: 20px;
+            color: white;
         }
 
         #time{
             position: absolute;
             z-index: 1;
-            left: 20px;
+            left: 40px;
             top: 100px;
-            background-color: #ddd;
-            padding: 30px;
-            border-radius: 20px;
+            background-color: rgb(230, 230, 230, 0.8);
+            padding: 20px;
+            border-radius: 15px;
         }
 
         #head{
@@ -54,54 +56,52 @@
     </style>
 </head>
 <body>
-    
-
     <script>
         const words = ['Awesome', 'Fantastic', 'Fabulous', 'Superb', 'Perfect', 'Brilliant', 'Coming up Roses'];
         const greeting = words[parseInt(Math.random()*words.length)];
+        let greets = ["Night", "Morning", "Afternoon", "Evening"];
+
+        // prompt user to input number to generate lucky number
+        let max;
+        do{
+            max = prompt("Enter a number greater or equal to 3: ");
+        }while(isNaN(max) || max < 3);
+
+
+        // set variables according to time
         let time = new Date();
         let hour = time.getHours();
         let min = time.getMinutes();
-        let apm;
-        let max;
-        let greets = ["Night", "Morning", "Afternoon", "Evening"];
-        let greetIndex;
-        let luckyNumbers = [0, 0, 0];
-
-        do{
-            max = prompt("Enter a number greater or equal to 3: ");
-        }while( isNaN(max) || max < 3);
-
-
-        if(hour >= 12){
-            if(hour >= 18){
-                greetIndex = 3;
-            }else{
-                greetIndex = 2;
-            }
-            hour -= 12;
-            apm = "pm";
-        }else{
-            if(hour >= 6){
-                greetIndex = 1;
-            }else{
-                greetIndex = 0;
-            }
+        let apm, greetIndex, backgroundName;
+        if(0 <= hour && hour < 6){
+            greetIndex = 0;
+            backgroundName = "night";
             apm = "am";
+        }else if(6 <= hour && hour < 12){
+            greetIndex = 1;
+            backgroundName = "morning";
+            apm = "am";
+        }else if(12 <= hour && hour < 18){
+            greetIndex = 2;
+            backgroundName = "afternoon";
+            apm = "pm";
+            hour -= 12;
+        }else if(18 <= hour && hour < 24){
+            greetIndex = 3;
+            backgroundName = "evening";
+            apm = "pm";
+            hour = hour - 12;
         }
-        // handle 5:2 case, add placeholder for 0s
+        // process time to add placeholder 0 for single digit time
+        if(hour < 10){
+            hour = "0" + hour;
+        }
+        if(min < 10){
+            min = "0" + min;
+        }
 
-        //first lucky number
-        // luckyNumbers[0] = parseInt(Math.random() * (max-1));
-        // for (let i = 0; i < 3; i++){
-        //     let temp1 = parseInt(Math.random() * (max-1));
-        //     let temp2 = parseInt(Math.random() * (max-1));
-        //     let temp3 = parseInt(Math.random() * (max-1));
-        //     while(temp2)
-        //     if(temp != luckyNumbers[i-1]){
-        //         luckyNumbers[i] = temp;
-        //     }
-        // }
+        //Generate three distinct lucky numbers
+        let luckyNumbers = [0, 0, 0];
         let temp1, temp2, temp3;
         temp1 = parseInt(Math.random() * (max)) + 1;
         do{
@@ -113,18 +113,23 @@
         luckyNumbers[0] = temp1;
         luckyNumbers[1] = temp2;
         luckyNumbers[2] = temp3;
+        
+        //Generate random head photo and body photo using random generated index
+        let bodyIndex, headIndex;
+        bodyIndex = parseInt(Math.random() * 6) + 1;
+        headIndex = parseInt(Math.random() * 6) + 1;
 
-    
+
         document.write(`<div id="container">
-                            <h1 id="title">Everything is ${greeting}</h1>
-                            <div id="time">The current time is ${hour}:${min} ${apm} - Good ${greets[greetIndex]}!</div>
-                            <div id="luckyNum">Your lucky numbers are ${luckyNumbers[0]}, ${luckyNumbers[1]}, and ${luckyNumbers[2]}.</div>
-                            <img id="head" src="heads/head1.png"> 
-                            <img id="body" src="bodies/body1.png"> 
-                            <img id="bg" src="backgrounds/afternoon.png">
+                            <h1 id="title">Everything is ${greeting}!</h1>
+                            <div id="time">
+                                The current time is ${hour}:${min} ${apm} - Good ${greets[greetIndex]}!<br>
+                                Your lucky numbers are ${luckyNumbers[0]}, ${luckyNumbers[1]}, and ${luckyNumbers[2]}.
+                            </div>
+                            <img id="head" src="heads/head${headIndex}.png"> 
+                            <img id="body" src="bodies/body${bodyIndex}.png"> 
+                            <img id="bg" src="backgrounds/${backgroundName}.png">
                         </div>`);
-
-
     </script>
 </body>
 </html>
