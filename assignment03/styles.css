@@ -1,0 +1,96 @@
+
+#container{
+    display: grid;
+    grid-auto-flow: row;
+    /* grid-template-rows: 1fr 1fr; */
+
+}
+#left {
+    width: 800px;
+    height: 600px;
+    float: left;
+    position: relative;
+}
+#right{
+    background-color: aliceblue;
+}
+#background {
+    width: 100%;
+}
+.grass {
+    position: absolute;
+    z-index: 1;
+    opacity: 1;
+}
+#grass1 {
+    bottom: 0px;
+    left: 0px;
+}
+#grass2 {
+    bottom: 0px;
+    left: 275px;
+}
+#grass3 {
+    bottom: 0px;
+    right: 0px;
+}
+.grass:hover {
+    background-color: rgba(255, 255, 0, 0.5);
+}
+#pokedex{
+    display: grid;
+    grid-auto-flow: column;
+    background-color: aliceblue;
+}
+#pokemonName div{
+    font-size: 15px;
+    height: 20px;
+    /* border: solid 1px black; */
+}
+#count div{
+    font-size: 15px;
+    height: 20px;
+    /* border: solid 1px black; */
+}
+#histogram div{
+    font-size: 15px;
+    height: 20px;
+    /* border: solid 1px black; */
+}
+
+#ph{
+    background-color: yellow;
+    width: 0%;
+
+}
+#bh{
+    background-color: green;
+    width: 0%;
+}
+#ch{
+    background-color: red;
+    width: 0%;
+}
+#eh{
+    background-color: violet;
+    width: 0%;
+}
+#sh{
+    background-color: blue;
+    width: 0%;
+}
+#rh{
+    background-color: gold;
+    width: 0%;
+}
+#mh{
+    background-color: silver;
+    width: 0%;
+}
+.histHeader{
+    background-color: rgb(130, 148, 164);
+}
+
+#superModeMessage{
+    display: none;
+}
