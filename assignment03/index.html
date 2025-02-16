@@ -221,46 +221,82 @@
             // work with grass1 
             grass2.onclick = function() {
                 if(selectionAllowed == true){
+                    let chance = Math.random();
+                    let pokemonName;
+                    //disable selection
                     selectionAllowed = false;
                     pokeballsLeft -= 1;
                     pokeballs_left.innerText = pokeballsLeft;
-                    generateOpaqueSrc(grass1);
-                    generateOpaqueSrc(grass3);
-                    // 33% of a pokemon
-                    if (chance >= 0.66) {
-                        let pokemonName = pokemons[parseInt(Math.random()*5)];
-                        grass2.src = "images/"+ pokemonName + ".png";         
+                    
+
+                    if(chance >= 0.66){ // 1/3 chance of pokemon
+                        if(superModeFlag){
+                            //randomly select one pokemon, inlcuding rare pokemons
+                            pokemonName = pokemons[parseInt(Math.random()*pokemons.length)];
+                            grass2.src = "images/"+ pokemonName + ".png";  
+                        }else{
+                            //normal mode, select from first five normal pokemons
+                            pokemonName = pokemons[parseInt(Math.random()*5)];
+                            grass2.src = "images/"+ pokemonName + ".png";  
+                        }
+                        //increment pokemonCaught and update html ref for pokemon caught count, text display, prev result tracking
                         pokemonCaught += 1;
+                        pokemon_caught.innerText = pokemonCaught; 
+                        results.innerText = "You caught a " + pokemonName + "!";
+                        prevResults.push(pokemonName);
+                        //update histogram
                         for(let i = 0; i < pokemons.length; i++){
                             if(pokemons[i] == pokemonName){
                                 pokemonsCount[i] += 1;
                                 updateHist(pokemonsCount, pokemonCaught);
                             }
                         }
-                        pokemon_caught.innerText = pokemonCaught;  
-                        results.innerText = "You caught a " + pokemonName + "!";
-                        prevResults.push(pokemonName);
-                    }
-                    // 33% of 2 pokeballs 
-                    else if (chance >= 0.33) { //chance >= 0.33 && chance < 0.66
-                        grass2.src = 'images/pokeballs.png';                            
-                        pokeballsLeft += 2;
-                        pokeballs_left.innerText = pokeballsLeft;
-                        results.innerText = "You gained two more pokeballs!";
-                        prevResults.push("pokeball");
-                    }
-                    // 33% of nothing
-                    else {
+                        //update two other grass patches
+                        generateOpaqueSrc([grass1, grass3], ["pokeballs", "nothing"]);
+
+                    }else if(chance >= 0.33){ // 1/3 chance of pokeballs
+                        //in super mode, allow super pokeball item
+                        if(superModeFlag){
+                            let c = Math.random();
+                            if(c >= 0.2){ // 0.8 chance normal pokeball item (two)
+                                grass2.src = 'images/pokeballs.png';
+                                pokeballsLeft += 2;
+                                pokeballs_left.innerText = pokeballsLeft;
+                                results.innerText = "You gained two more pokeballs!";
+                                prevResults.push("two pokeballs");
+                            }else{ // 0.2 chance rare pokeball item (four)
+                                grass2.src = 'images/fourpokeballs.png';
+                                pokeballsLeft += 4;
+                                pokeballs_left.innerText = pokeballsLeft;
+                                results.innerText = "You gained four more pokeballs!";
+                                prevResults.push("four pokeballs");
+                            }
+                        }else{//normal selection mode
+                            grass2.src = 'images/pokeballs.png';
+                            pokeballsLeft += 2;
+                            pokeballs_left.innerText = pokeballsLeft;
+                            results.innerText = "You gained two more pokeballs!";
+                            prevResults.push("two pokeballs");
+                        }
+                        //update two other grass patches
+                        generateOpaqueSrc([grass1, grass3], ["pokemon", "nothing"]);
+                    }else{ //1/3 chance of nothing
                         grass2.src = '';     
                         results.innerText = "You didn't find anything...";    
-                        prevResults.push("nothing");                 
-                    }   
+                        prevResults.push("nothing");          
+                        //update two other grass patches
+                        generateOpaqueSrc([grass1, grass3], ["pokemon", "pokeballs"]);       
+                    }
+
+                    //start new selection round after selection
                     if(pokeballsLeft > 0){
                         // show the reset button
                         button_playagain.style.display = 'block';  
-                        plen.style.width = 0.2;
                     }   
+
+                    //when out of pokeballs, stop selection, proceed to final results display
                     if(pokeballsLeft == 0){
+                        //hide game values
                         results.style.display = "none";
                         pokeLeftMes.style.display = "none";
                         pokeCaughtMes.style.display = "none";
@@ -279,49 +315,85 @@
                 }
             }
 
-            // work with grass3 
+            // work with grass3
             grass3.onclick = function() {
                 if(selectionAllowed == true){
+                    let chance = Math.random();
+                    let pokemonName;
+                    //disable selection
                     selectionAllowed = false;
                     pokeballsLeft -= 1;
                     pokeballs_left.innerText = pokeballsLeft;
-                    generateOpaqueSrc(grass2);
-                    generateOpaqueSrc(grass1);
-                    // 33% of a pokemon
-                    if (chance >= 0.66) {
-                        let pokemonName = pokemons[parseInt(Math.random()*5)];
-                        grass3.src = "images/"+ pokemonName + ".png";         
+                    
+
+                    if(chance >= 0.66){ // 1/3 chance of pokemon
+                        if(superModeFlag){
+                            //randomly select one pokemon, inlcuding rare pokemons
+                            pokemonName = pokemons[parseInt(Math.random()*pokemons.length)];
+                            grass3.src = "images/"+ pokemonName + ".png";  
+                        }else{
+                            //normal mode, select from first five normal pokemons
+                            pokemonName = pokemons[parseInt(Math.random()*5)];
+                            grass3.src = "images/"+ pokemonName + ".png";  
+                        }
+                        //increment pokemonCaught and update html ref for pokemon caught count, text display, prev result tracking
                         pokemonCaught += 1;
+                        pokemon_caught.innerText = pokemonCaught; 
+                        results.innerText = "You caught a " + pokemonName + "!";
+                        prevResults.push(pokemonName);
+                        //update histogram
                         for(let i = 0; i < pokemons.length; i++){
                             if(pokemons[i] == pokemonName){
                                 pokemonsCount[i] += 1;
                                 updateHist(pokemonsCount, pokemonCaught);
                             }
                         }
-                        pokemon_caught.innerText = pokemonCaught;  
-                        results.innerText = "You caught a " + pokemonName + "!";
-                        prevResults.push(pokemonName);
-                    }
-                    // 33% of 2 pokeballs 
-                    else if (chance >= 0.65) { //chance >= 0.33 && chance < 0.66
-                        grass3.src = 'images/pokeballs.png';                            
-                        pokeballsLeft += 2;
-                        pokeballs_left.innerText = pokeballsLeft;
-                        results.innerText = "You gained two more pokeballs!";
-                        prevResults.push("pokeball");
-                    }
-                    // 33% of nothing
-                    else {
+                        //update two other grass patches
+                        generateOpaqueSrc([grass1, grass2], ["pokeballs", "nothing"]);
+
+                    }else if(chance >= 0.33){ // 1/3 chance of pokeballs
+                        //in super mode, allow super pokeball item
+                        if(superModeFlag){
+                            let c = Math.random();
+                            if(c >= 0.2){ // 0.8 chance normal pokeball item (two)
+                                grass3.src = 'images/pokeballs.png';
+                                pokeballsLeft += 2;
+                                pokeballs_left.innerText = pokeballsLeft;
+                                results.innerText = "You gained two more pokeballs!";
+                                prevResults.push("two pokeballs");
+                            }else{ // 0.2 chance rare pokeball item (four)
+                                grass3.src = 'images/fourpokeballs.png';
+                                pokeballsLeft += 4;
+                                pokeballs_left.innerText = pokeballsLeft;
+                                results.innerText = "You gained four more pokeballs!";
+                                prevResults.push("four pokeballs");
+                            }
+                        }else{//normal selection mode
+                            grass3.src = 'images/pokeballs.png';
+                            pokeballsLeft += 2;
+                            pokeballs_left.innerText = pokeballsLeft;
+                            results.innerText = "You gained two more pokeballs!";
+                            prevResults.push("two pokeballs");
+                        }
+                        //update two other grass patches
+                        generateOpaqueSrc([grass1, grass2], ["pokemon", "nothing"]);
+                    }else{ //1/3 chance of nothing
                         grass3.src = '';     
                         results.innerText = "You didn't find anything...";    
-                        prevResults.push("nothing");                 
-                    }   
+                        prevResults.push("nothing");          
+                        //update two other grass patches
+                        generateOpaqueSrc([grass1, grass2], ["pokemon", "pokeballs"]);       
+                    }
+
+                    //start new selection round after selection
                     if(pokeballsLeft > 0){
                         // show the reset button
                         button_playagain.style.display = 'block';  
-                        plen.style.width = 0.2;
                     }   
+
+                    //when out of pokeballs, stop selection, proceed to final results display
                     if(pokeballsLeft == 0){
+                        //hide game values
                         results.style.display = "none";
                         pokeLeftMes.style.display = "none";
                         pokeCaughtMes.style.display = "none";
