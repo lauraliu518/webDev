@@ -17,7 +17,8 @@
                 <div id="right">
                     <!-- instructions & output (text) + play again button -->
                     <h1>Gotta Catch 'em All</h1>
-                    <p>Instructions ......</p>
+                    <p>Click on any of the three grass patches to discover what's behind the grass. You have 1/3 chance for discovering a pokeball item, a pokemon, or find nothing. Click on the "Play Again" button to make use another pokeball to make a new selection. The game ends when you run out of pokeballs. Click the "Start Over" button to start a new game. Good luck!</p>
+                    <p>If you are in super mode, you will have the chance to discover rare pokemons, or four pokeballs.</p>
                     <p id="superModeMessage">You are in SUPER MODE! Good Luck!</p>
                     <h2>Results</h2>
                     <p id="results">You caught a ...</p>
@@ -97,12 +98,17 @@
             const rc = document.getElementById("rc");
             const mc = document.getElementById("mc");
             //super mode variables
+            let superModeProbabilityOutOf100 = 20;
             const superModeMessage = document.getElementById("superModeMessage");
-            //define pokemons, initialize local count and reference to html
+            let superModeFlag = generateSuperFlag(superModeProbabilityOutOf100);
+            if(superModeFlag){
+                superModeMessage.style.display = "block";
+            }
+            //define pokemons, initialize local count and reference to html elements
             let pokemons = ["pikachu", "bulbasaur", "charmander", "eevee", "squirtle", "reshiram", "mewtwo"];
-            let pokemonsCount  = [0, 0, 0, 0, 0, 0, 0];
-            let pokemonHistRefs = [pc, bc, cc, ec, sc, rc, mc];
-            let pokemonHistBars = [plen, blen, clen, elen, slen, rlen, mlen];
+            let pokemonsCount  = [0, 0, 0, 0, 0, 0, 0]; //histogram count
+            let pokemonHistRefs = [pc, bc, cc, ec, sc, rc, mc]; //histogram count refs
+            let pokemonHistBars = [plen, blen, clen, elen, slen, rlen, mlen]; //histogram bar refs
             // variables to keep track of game state
             let pokeballsLeft = 5;
             let pokemonCaught = 0;
@@ -110,87 +116,89 @@
             let selectionAllowed = true;
             // previous results
             let prevResults = [];
-            console.log("len:"+pokemons.length);
             for(let i = 0; i < pokemons.length; i++){
                 pokemonHistRefs[i].innerText = pokemonsCount[i];
             }
-            //Super mode variables
-            let superModeProbabilityOutOf100 = 20;
-            let superModeFlag = generateSuperFlag(superModeProbabilityOutOf100);
-            if(superModeFlag){
-                superModeMessage.style.display = "block";
-            }
-            console.log(superModeFlag);
-            let superItems = ["reshiram", "mewtwo", "pokeballs"];
-
-
-            
-            
 
             // work with grass1 
             grass1.onclick = function() {
                 if(selectionAllowed == true){
+                    let chance = Math.random();
+                    let pokemonName;
+                    //disable selection
                     selectionAllowed = false;
                     pokeballsLeft -= 1;
                     pokeballs_left.innerText = pokeballsLeft;
-                    generateOpaqueSrc(grass2);
-                    generateOpaqueSrc(grass3);
-                    // 33% of a pokemon
-                    if (chance >= 0.66) {
-                        let pokemonName = pokemons[parseInt(Math.random()*5)];
-                        grass1.src = "images/"+ pokemonName + ".png";         
+                    
+
+                    if(chance >= 0.66){ // 1/3 chance of pokemon
+                        if(superModeFlag){
+                            //randomly select one pokemon, inlcuding rare pokemons
+                            pokemonName = pokemons[parseInt(Math.random()*pokemons.length)];
+                            grass1.src = "images/"+ pokemonName + ".png";  
+                        }else{
+                            //normal mode, select from first five normal pokemons
+                            pokemonName = pokemons[parseInt(Math.random()*5)];
+                            grass1.src = "images/"+ pokemonName + ".png";  
+                        }
+                        //increment pokemonCaught and update html ref for pokemon caught count, text display, prev result tracking
                         pokemonCaught += 1;
+                        pokemon_caught.innerText = pokemonCaught; 
+                        results.innerText = "You caught a " + pokemonName + "!";
+                        prevResults.push(pokemonName);
+                        //update histogram
                         for(let i = 0; i < pokemons.length; i++){
                             if(pokemons[i] == pokemonName){
                                 pokemonsCount[i] += 1;
                                 updateHist(pokemonsCount, pokemonCaught);
                             }
                         }
-                        pokemon_caught.innerText = pokemonCaught;  
-                        results.innerText = "You caught a " + pokemonName + "!";
-                        prevResults.push(pokemonName);
-                    }
-                    // 33% of 2 pokeballs 
-                    else if (chance >= 0.33 && chance < 0.66) { 
-                        grass1.src = 'images/pokeballs.png';                            
-                        pokeballsLeft += 2;
-                        pokeballs_left.innerText = pokeballsLeft;
-                        results.innerText = "You gained two more pokeballs!";
-                        prevResults.push("pokeballs");
-                    }
-                    else if (superModeFlag & chance < 0.2){
-                        let pokemonName = superItems[parseInt(Math.random()*3)];
-                        if(pokemonName == "pokeballs"){
-                            grass1.src = "images/fourpokeballs.png";
-                            pokeballsLeft += 4;
-                            pokeballs_left.innerText = pokeballsLeft;
-                            results.innerText = "You gained four more pokeballs!";
-                        }else{
-                            pokemonCaught += 1;
-                            grass1.src = "images/" + pokemonName + ".png";
-                            for(let i = 0; i < pokemons.length; i++){
-                                if(pokemons[i] == pokemonName){
-                                    pokemonsCount[i] += 1;
-                                    updateHist(pokemonName, pokemonsCount, pokemonCaught);
-                                }
+                        //update two other grass patches
+                        generateOpaqueSrc([grass2, grass3], ["pokeballs", "nothing"]);
+
+                    }else if(chance >= 0.33){ // 1/3 chance of pokeballs
+                        //in super mode, allow super pokeball item
+                        if(superModeFlag){
+                            let c = Math.random();
+                            if(c >= 0.2){ // 0.8 chance normal pokeball item (two)
+                                grass1.src = 'images/pokeballs.png';
+                                pokeballsLeft += 2;
+                                pokeballs_left.innerText = pokeballsLeft;
+                                results.innerText = "You gained two more pokeballs!";
+                                prevResults.push("two pokeballs");
+                            }else{ // 0.2 chance rare pokeball item (four)
+                                grass1.src = 'images/fourpokeballs.png';
+                                pokeballsLeft += 4;
+                                pokeballs_left.innerText = pokeballsLeft;
+                                results.innerText = "You gained four more pokeballs!";
+                                prevResults.push("four pokeballs");
                             }
-                            pokemon_caught.innerText = pokemonCaught;  
-                            results.innerText = "You caught a " + pokemonName + "!";
-                            prevResults.push(pokemonName);
-                        }    
-                    }
-                    // 33% of nothing
-                    else {
+                        }else{//normal selection mode
+                            grass1.src = 'images/pokeballs.png';
+                            pokeballsLeft += 2;
+                            pokeballs_left.innerText = pokeballsLeft;
+                            results.innerText = "You gained two more pokeballs!";
+                            prevResults.push("two pokeballs");
+                        }
+                        //update two other grass patches
+                        generateOpaqueSrc([grass2, grass3], ["pokemon", "nothing"]);
+                    }else{ //1/3 chance of nothing
                         grass1.src = '';     
                         results.innerText = "You didn't find anything...";    
-                        prevResults.push("nothing");                 
-                    }   
+                        prevResults.push("nothing");          
+                        //update two other grass patches
+                        generateOpaqueSrc([grass2, grass3], ["pokemon", "pokeballs"]);       
+                    }
+
+                    //start new selection round after selection
                     if(pokeballsLeft > 0){
                         // show the reset button
                         button_playagain.style.display = 'block';  
-                        plen.style.width = 0.2;
                     }   
+
+                    //when out of pokeballs, stop selection, proceed to final results display
                     if(pokeballsLeft == 0){
+                        //hide game values
                         results.style.display = "none";
                         pokeLeftMes.style.display = "none";
                         pokeCaughtMes.style.display = "none";
@@ -332,15 +340,6 @@
                 }
             }
 
-            grasses.onclick = function(){
-                console.log("hello");
-                if(pokeballsLeft == 0){
-                    console.log("done");
-                    console.log(prevResults);
-                }
-                console.log(pokeballsLeft)
-            }
-
             // reset button 
             button_playagain.onclick = function() {
                 // reset the grasses 
@@ -350,7 +349,6 @@
                 grass2.style.opacity = 1;
                 grass3.src = 'images/grass.png';
                 grass3.style.opacity = 1;
-
 
                 // hide the play again button
                 button_playagain.style.display = 'none';
@@ -397,20 +395,51 @@
                 }
             }
 
-            function generateOpaqueSrc(myEle){
-                chance = Math.random();
-                if(chance >= 0.66){
-                    let pokemonName = pokemons[parseInt(Math.random()*5)];
-                    myEle.src = "images/"+ pokemonName + ".png";     
-                }else if (chance >= 0.33){
-                    myEle.src = "images/pokeballs.png"; 
-                }else{
-                    myEle.src = "";
+            function generateOpaqueSrc(myHTMLRefs, selectionLeft){
+                //myHTMLRefs: list of reference(s) to html element for grassy patches unselected
+                //selectionLeft: list of availble selections
+
+                //local selection result (item behind grasses patches)
+                let localSelectionResults = [];
+
+                for(let i = 0; i < myHTMLRefs.length; i++){
+                    //generate selectionIndex for current grassy patch based on (selections left)/(patches without item)
+                    let selectionIndex = parseInt(Math.random() * (selectionLeft.length/(i+1)));
+                    console.log("grass idx:" + i + "selection: " + selectionLeft[selectionIndex]);
+                    
+                    //set image of item behind grass patch based on selection generated
+                    if(selectionLeft[selectionIndex] == "pokemon"){
+                        let pokemonName;
+                        //generate random pokemon
+                        if(superModeFlag){ //select from pool including rare pokemons in super mode
+                            pokemonName = pokemons[parseInt(Math.random() * pokemons.length)];
+                        }else{ //select only common pokemons in normal mode
+                            pokemonName = pokemons[parseInt(Math.random() * 5)];
+                        }
+                        myHTMLRefs[i].src = "images/"+ pokemonName + ".png";     
+                    }else if (selectionLeft[selectionIndex] == "pokeballs"){
+                        //in superMode, 50% chance of super item pokeball
+                        if(superModeFlag){
+                            let chance = Math.random();
+                            if(chance >= 0.5){
+                                myHTMLRefs[i].src = "images/pokeballs.png"; 
+                            }else{
+                                myHTMLRefs[i].src = "images/fourpokeballs.png"
+                            } 
+                        }else{
+                            myHTMLRefs[i].src = "images/pokeballs.png"; 
+                        }
+                    }else if (selectionLeft[selectionIndex] == "nothing"){
+                        myHTMLRefs[i].src = "";
+                    }
+                    //remove selected item from selections left list
+                    selectionLeft.splice(selectionIndex, 1);
+                    //set opacity
+                    myHTMLRefs[i].style.opacity = 0.5;
                 }
-                myEle.style.opacity = 0.5;
             }
 
-            function updateHist(pokemonName, pokemonsCount, pokemonCaught){
+            function updateHist(pokemonsCount, pokemonCaught){
                 for (let i = 0; i < pokemons.length; i++){
                     pokemonHistRefs[i].innerText = pokemonsCount[i];
                     pokemonHistBars[i].style.width = (pokemonsCount[i]/pokemonCaught)*100 + "%";
@@ -420,15 +449,11 @@
             function generateSuperFlag(prob){
                 generatedNum = Math.random();
                 if(generatedNum < prob/100){
-                    console.log("generatednum", generatedNum);
-                    console.log("prob", prob/100);
                     return true;
                 }else{
                     return false;
                 }
             }
-
-
 
         </script>
     </body>
