@@ -29,10 +29,12 @@
                 <p id="results">You caught a ...</p>
                 <p id="pokeLeftMes">Pokeballs left: <span id="pokeballs_left">5</span></p>
                 <p id="pokeCaughtMes">Pokemon caught: <span id="pokemon_caught">0</span></p>
-                <button id="button_playagain" style="display: none;">Play Again</button>
                 <h3 id="prevResultsTitle" style="display: none;">Your previous result history:</h3>
-                <p id="prevResultsContent" style="display: none;"></p>
+                <p id="prevResultsContent" style="display: none;">No history.</p>
+                <button id="button_playagain" style="display: none;">Play Again</button>
                 <button id="reset" style="display: none;">Start Over</button>
+                <button id="clearHistButton" style="display: none;">Clear Result History</button>
+
 
             </div>
         </div>
@@ -76,7 +78,6 @@
         const grass1 = document.getElementById('grass1');
         const grass2 = document.getElementById('grass2');
         const grass3 = document.getElementById('grass3');
-        const grasses = document.getElementsByClassName("grass");
         const results = document.getElementById('results');
         const pokeballs_left = document.getElementById('pokeballs_left');
         const pokemon_caught = document.getElementById('pokemon_caught');
@@ -86,6 +87,7 @@
         const prevRConent = document.getElementById("prevResultsContent");
         const pokeLeftMes = document.getElementById("pokeLeftMes");
         const pokeCaughtMes = document.getElementById("pokeCaughtMes");
+        const clearHistButton = document.getElementById("clearHistButton");
         //histogram bar section
         const plen = document.getElementById("ph");
         const blen = document.getElementById("bh");
@@ -102,6 +104,7 @@
         const sc = document.getElementById("sc");
         const rc = document.getElementById("rc");
         const mc = document.getElementById("mc");
+
         //super mode variables
         let superModeProbabilityOutOf100 = 20;
         const superModeMessage = document.getElementById("superModeMessage");
@@ -109,30 +112,40 @@
         if (superModeFlag) {
             superModeMessage.style.display = "block";
         }
+
         //define pokemons, initialize local count and reference to html elements
         let pokemons = ["pikachu", "bulbasaur", "charmander", "eevee", "squirtle", "reshiram", "mewtwo"];
+        let pokeballsLeft = 5;
+        let pokemonCaught = 0; 
+        let selectionAllowed = true; //flag selection state
+
+        //histogram variables
         let pokemonsCount = [0, 0, 0, 0, 0, 0, 0]; //histogram count
         let pokemonHistRefs = [pc, bc, cc, ec, sc, rc, mc]; //histogram count refs
-        let pokemonHistBars = [plen, blen, clen, elen, slen, rlen, mlen]; //histogram bar refs
-        // variables to keep track of game state
-        let pokeballsLeft = 5;
-        let pokemonCaught = 0;
-        //flag for selection
-        let selectionAllowed = true;
-        // previous results
-        let prevResults = [];
         for (let i = 0; i < pokemons.length; i++) {
             pokemonHistRefs[i].innerText = pokemonsCount[i];
         }
+        let pokemonHistBars = [plen, blen, clen, elen, slen, rlen, mlen]; //histogram bar refs
+
+        // previous results
+        let prevResults = [];
         let totalGrassRefList = [grass1, grass2, grass3];
+
+        //grass click reaction
         for(let i = 0; i < totalGrassRefList.length; i++){
             totalGrassRefList[i].onclick = function(event){
                 if (selectionAllowed == true) {
                     grassClick(totalGrassRefList[i]);
                 }
-                console.log("event"+event);
-                console.log("grass"+totalGrassRefList[i]);
             }
+        }
+
+        //clear history button
+        clearHistButton.onclick = function(event){
+            prevResults = [];
+            prevRConent.innerText = "No history.";
+            clearHistButton.style.display = "none";
+
         }
 
         // reset button 
@@ -175,8 +188,6 @@
             }
             // hide the recap section contents
             reset.style.display = 'none';
-            prevRTitle.style.display = 'none';
-            prevRConent.style.display = 'none';
             prevRConent.innerText = "";
             //show updated results
             results.innerText = "";
@@ -231,6 +242,15 @@
                 selectionLeft.splice(selectionIndex, 1);
                 //set opacity
                 myHTMLRefs[i].style.opacity = 0.5;
+            }
+
+            //clear history button display
+            if(prevResults[0]!= undefined){
+                clearHistButton.style.display = "block";
+                console.log("show btn");
+            }else{
+                clearHistButton.style.display = "none";
+                console.log("hide btn");
             }
         }
 
@@ -329,6 +349,14 @@
             if (pokeballsLeft > 0) {
                 // show the reset button
                 button_playagain.style.display = 'block';
+                let mes = "";
+                for (let i = prevResults.length - 1; i > 0; i--) {
+                    mes = mes + prevResults[i] + " found, "
+                }
+                mes = mes + prevResults[0] + " found."
+                prevRConent.innerText = mes;
+                prevRConent.style.display = 'block';
+                prevRTitle.style.display = 'block';
             }
 
             //when out of pokeballs, stop selection, proceed to final results display
@@ -341,10 +369,10 @@
                 prevRTitle.style.display = 'block';
                 //put prev result into string
                 let mes = "";
-                for (let i = 0; i < prevResults.length - 1; i++) {
+                for (let i = prevResults.length - 1; i > 0; i--) {
                     mes = mes + prevResults[i] + " found, "
                 }
-                mes = mes + prevResults[prevResults.length - 1] + " found."
+                mes = mes + prevResults[0] + " found."
                 prevRConent.innerText = mes;
                 prevRConent.style.display = 'block';
                 updateHist(pokemonsCount, pokemonCaught);
