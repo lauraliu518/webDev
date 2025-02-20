@@ -148,7 +148,7 @@
 
         }
 
-        // reset button 
+        // reset button ("play again button")
         button_playagain.onclick = function () {
             // reset the grasses 
             grass1.src = 'images/grass.png';
@@ -163,7 +163,7 @@
             selectionAllowed = true;
         }
 
-        // restart game button 
+        // restart game button ("start over button")
         reset.onclick = function () {
             //reset the game section 
             //reset grass
@@ -178,7 +178,6 @@
             pokeballs_left.innerText = pokeballsLeft;
             pokemonCaught = 0;
             pokemon_caught.innerText = pokemonCaught;
-            prevResults = [];
             selectionAllowed = true;
             //reset histogram
             pokemonsCount = [0, 0, 0, 0, 0, 0, 0];
@@ -188,16 +187,17 @@
             }
             // hide the recap section contents
             reset.style.display = 'none';
-            prevRConent.innerText = "";
             //show updated results
             results.innerText = "";
             results.style.display = "block";
             pokeLeftMes.style.display = "block";
             pokeCaughtMes.style.display = "block";
-            //reset super mode
+            //reset super mode, hide and display button accordingly
             superModeFlag = generateSuperFlag(superModeProbabilityOutOf100);
             if (superModeFlag) {
                 superModeMessage.style.display = "block";
+            }else{
+                superModeMessage.style.display = "none";
             }
         }
 
@@ -211,7 +211,6 @@
             for (let i = 0; i < myHTMLRefs.length; i++) {
                 //generate selectionIndex for current grassy patch based on (selections left)/(patches without item)
                 let selectionIndex = parseInt(Math.random() * (selectionLeft.length / (i + 1)));
-                console.log("grass idx:" + i + "selection: " + selectionLeft[selectionIndex]);
 
                 //set image of item behind grass patch based on selection generated
                 if (selectionLeft[selectionIndex] == "pokemon") {
@@ -247,10 +246,8 @@
             //clear history button display
             if(prevResults[0]!= undefined){
                 clearHistButton.style.display = "block";
-                console.log("show btn");
             }else{
                 clearHistButton.style.display = "none";
-                console.log("hide btn");
             }
         }
 
@@ -278,7 +275,6 @@
                     unselectedGrassesRefList.push(totalGrassRefList[i]);
                 }
             }
-            console.log(unselectedGrassesRefList);
             //disable selection
             selectionAllowed = false;
             pokeballsLeft -= 1;
@@ -349,6 +345,7 @@
             if (pokeballsLeft > 0) {
                 // show the reset button
                 button_playagain.style.display = 'block';
+                //formulate result history
                 let mes = "";
                 for (let i = prevResults.length - 1; i > 0; i--) {
                     mes = mes + prevResults[i] + " found, "
@@ -367,14 +364,6 @@
                 pokeCaughtMes.style.display = "none";
                 reset.style.display = 'block';
                 prevRTitle.style.display = 'block';
-                //put prev result into string
-                let mes = "";
-                for (let i = prevResults.length - 1; i > 0; i--) {
-                    mes = mes + prevResults[i] + " found, "
-                }
-                mes = mes + prevResults[0] + " found."
-                prevRConent.innerText = mes;
-                prevRConent.style.display = 'block';
                 updateHist(pokemonsCount, pokemonCaught);
             }
         }
