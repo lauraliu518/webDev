@@ -1,16 +1,206 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Seasonal To-Do List</h1>
-    <div id="foo" data-counter="pikachu"></div>
-    <script>
-        
-    </script>
-</body>
+<html>
+    <head>
+        <title>Assignment 05</title>
+        <style>
+            body {
+                background-image: url('images/corkboard.jpg');
+            }
+            #filter {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+            }
+            #button_add_event {
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+            #button_add_event:hover {
+                bottom: 15px;
+                right: 15px;
+                width: 60px;
+                height: 60px;
+            }
+
+            #modal_add_event {
+                box-sizing: border-box;
+                padding: 20px;
+                width: 300px;
+                height: 400px;
+                background-color: #fff;            
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-left: -150px;
+                margin-top: -200px;
+            }
+            .hidden {
+                display: none;
+            }
+            .item {
+                width: 100px;
+                height: 100px;
+                border: 1px solid black;
+                float: left;
+                margin: 10px;
+            }
+            .spring {
+                background-color: lightgreen;                
+            }
+            .summer {
+                background-color: yellow;
+            }
+            .fall {
+                background-color: orange;
+            }
+            .winter {
+                background-color: lightblue;
+            }
+
+            #item_detail{
+                box-sizing: border-box;
+                padding: 20px;
+                width: 300px;
+                height: 400px;
+                background-color: #fff;            
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-left: -150px;
+                margin-top: -200px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Seasonal To-Do List</h1>
+
+        <!-- drop down filter
+             add new event button
+             modal box for adding an event 
+             modal box for viewing an event -->
+
+        <select id="filter">
+            <option value="">Select a season</option>
+            <option value="spring">Spring</option>
+            <option value="summer">Summer</option>
+            <option value="fall">Fall</option>
+            <option value="winter">Winter</option>
+        </select>
+
+        <img id="button_add_event" src="images/add_button.png"></img>
+
+        <div id="modal_add_event" class="hidden">
+            <h2>Add New Event</h2>
+            <form>
+                <div>
+                    <label for="modal_add_event_title">Title:</label>
+                    <input type="text" id="modal_add_event_title">
+                </div>
+                <div>
+                    <label for="modal_add_event_season">Season</label>
+                    <select id="modal_add_event_season">
+                        <option value="">Select a season</option>
+                        <option value="spring">Spring</option>
+                        <option value="summer">Summer</option>
+                        <option value="fall">Fall</option>
+                        <option value="winter">Winter</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="modal_add_event_content">Content</label>
+                    <textarea id="modal_add_event_content"></textarea>                    
+                </div>
+                <div>
+                    <button id="modal_add_event_save">Save</button>
+                    <button id="modal_add_event_cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="existing_items">            
+            
+        </div>
+
+        <div id="item_detail" class="hidden">
+            <h1 id="item_detail_title">Title</h1>
+            <div id="item_detail_container">
+                Season: <span id="item_detail_season">sp</span> <br>
+                
+                <span id="item_detail_content">shfioadsfiajds</span><br>
+                Created: <span id="item_detail_created_time">12</span><br>
+                Last Accessed: <span id="item_detail_accessed_time">13</span><br>
+                <button id="item_detail_close">Close</button>
+                
+            </div>
+        </div>
+
+        <script>
+            // DOM queries
+            const button_add_event = document.querySelector('#button_add_event');
+            const modal_add_event = document.querySelector('#modal_add_event');
+            const modal_add_event_cancel = document.getElementById('modal_add_event_cancel');
+
+            // const item_detail = document.querySelector("#item_detail");
+
+            button_add_event.onclick = function(event) {
+                modal_add_event.classList.remove('hidden');
+            }
+            modal_add_event_cancel.onclick = function(event) {
+                event.preventDefault();
+                modal_add_event.classList.add('hidden');
+            }
+            modal_add_event_save.onclick = function(event) {
+                event.preventDefault();
+
+                // access the title 
+                const title = document.querySelector('#modal_add_event_title').value;
+                // access the season
+                const season = document.querySelector('#modal_add_event_season').value;
+
+                // access the content 
+                const content = document.querySelector('#modal_add_event_content').value;
+
+                console.log(title, season, content);
+
+                // create a new to-do item 
+                /*
+                <div class="item winter" data-content="In the mountains">
+                    Title
+                </div>
+                */
+                const el = document.createElement('div');
+                el.classList.add('item');
+                el.classList.add(season);
+                el.innerText = title;
+                el.dataset.content = content;
+
+                // add to-do item to the DOM
+                document.getElementById('existing_items').appendChild(el);
+
+                const item_detail = document.querySelector("#item_detail");
+                const item_detail_close = document.querySelector("#item_detail_close");
+                const item_detail_title = document.querySelector("#item_detail_title");
+                const item_detail_season = document.querySelector("#item_detail_season");
+                const item_detail_content = document.querySelector("#item_detail_content");
+                const item_detail_created_time = document.querySelector("#item_detail_created_time");
+                const item_detail_accessed_time = document.querySelector("#item_detail_accessed_time");
+
+
+                // set up a click handler
+                el.onclick = function(event) {
+                    item_detail.classList.remove("hidden");
+                    console.log(event.currentTarget.dataset.content);
+                }
+
+                item_detail_close.onclick = function(event){
+                    item_detail.classList.add("hidden");
+                }
+
+                modal_add_event.classList.add("hidden");
+            }
+        </script>
+    </body>
 </html>
