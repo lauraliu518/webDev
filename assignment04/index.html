@@ -3,12 +3,72 @@
   <head>
     <title>Design Your own Hogwarts!</title>
     <style type="text/css">
+      .container{
+        display:grid;
+        display:inline-block;
+      }
 
+      #left{
+        border: solid 1px black;
+        width: 320px;
+        height: 320px;
+        position: absolute;
+      }
+
+      #right{
+        /* border: solid 1px black; */
+        margin-left: 350px;
+
+      }
+
+      #selectionBox{
+        position: relative;
+      }
+
+      #creationBox{
+        position: relative;
+      }
+
+      .block{
+        padding: 0px;
+        margin:0px;
+        width: 32px;
+        height: 32px;
+        box-sizing: border-box;
+        position: absolute;
+      }
+
+      .sblock{
+        padding: 1px;
+        margin: 1px;
+        width: 32px;
+        height: 32px;
+        position: absolute;
+      }
+
+      .block:hover, .sblock:hover{
+        border: solid 3px yellow;
+        box-sizing: border-box;
+      }
+
+      .selected{
+        border: solid 5px red;
+        box-sizing: border-box;
+      }
     </style>
   </head>
 
   <body>
     <h1>Design Your Own Hogwarts!</h1>
+    <div id="container">
+      <div id="left">
+        <div id="creationBox"></div>
+      </div>
+      <div id="right">
+        <p>Click on a tile here to select it. Then clock on the map to the left to place the tile.</p>
+        <div id="selectionBox"></div>
+      </div>
+    </div>
 
     <!-- load in the image array file - this makes available a new array of all image filenames that you can use for this project -->
     <!-- Assets courtesy of Crawl Stone Soup: https://github.com/crawl/tiles -->
@@ -16,7 +76,63 @@
 
     <!-- write your code here -->
     <script>
+      // references
+      const creationBox = document.querySelector("#creationBox");
+      const selectionBox = document.querySelector("#selectionBox");
 
+      //create divs for creation box (left column)
+      for(let i = 0; i < 10; i++){
+        for(let j = 0; j < 10; j++){
+          let newBlock = document.createElement("div");
+          newBlock.style.top = `${i*32}px`;
+          newBlock.style.left = `${j*32}px`;
+          newBlock.classList.add("block");
+          creationBox.appendChild(newBlock);
+        }
+        
+      }
+
+      //create divs for selection box (right column)
+      for(let i = 0; i < 27; i++){
+        for(let j = 0; j < 26; j++){
+          let newBlock = document.createElement("div");
+          newBlock.style.top = `${i*(32+8)}px`;
+          newBlock.style.left = `${j*(32+8)}px`;
+          newBlock.classList.add("sblock");
+          if(array_library[i*26+j]){
+            newBlock.style.backgroundImage = `url(${array_library[i*26+j]})`;
+          }
+          selectionBox.appendChild(newBlock);
+        }
+      }
+
+      //handle selection picker (store selected url to variable)
+      const allSelectionBlocks = document.querySelectorAll(".sblock");
+      let currentPattern;
+      for(selectionBlock of allSelectionBlocks){
+        selectionBlock.onclick = function(event){
+          console.log("hi");
+          clearAllRedBoarder();
+          event.currentTarget.classList.add("selected");
+          currentPattern = event.currentTarget.style.backgroundImage;
+        }
+      }
+
+      //put selection onto creation board (use stored pattern to paint blocks on the left)
+      const allCreationBlocks = document.querySelectorAll(".block");
+      for(creationBlock of allCreationBlocks){
+        creationBlock.onclick = function(event){
+          event.currentTarget.style.backgroundImage = currentPattern;
+        }
+      }
+
+      //handle selection indication
+      function clearAllRedBoarder(){
+        for(s of allSelectionBlocks){
+          s.classList.remove("selected");
+        }
+      }
+      
     </script>
 
   </body>
