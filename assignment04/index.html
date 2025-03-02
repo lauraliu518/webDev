@@ -79,6 +79,7 @@
       // references
       const creationBox = document.querySelector("#creationBox");
       const selectionBox = document.querySelector("#selectionBox");
+      console.log(array_library.length)
 
       //create divs for creation box (left column)
       for(let i = 0; i < 10; i++){
@@ -115,6 +116,7 @@
           clearAllRedBoarder();
           event.currentTarget.classList.add("selected");
           currentPattern = event.currentTarget.style.backgroundImage;
+          console.log(currentPattern);
         }
       }
 
@@ -131,6 +133,8 @@
         for(s of allSelectionBlocks){
           s.classList.remove("selected");
         }
+
+        
       }
       
     </script>
