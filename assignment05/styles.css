@@ -57,6 +57,14 @@ body {
 .winter {
     background-color: lightblue;
 }
+.complete{
+    border: solid 2px green;
+    box-sizing: border-box;
+    opacity: 0.7;
+}
+.imcomplete{
+
+}
 
 #item_detail{
     box-sizing: border-box;
@@ -73,20 +81,38 @@ body {
 
 }
 
-#buttonDiv{
+#completionDiv{
     padding: 30px;
     text-align: center;
 }
 
+#buttonDiv{
+    padding: 30px;
+    text-align: center;
+}
+#completionBtn{
+    margin:auto;
+}
 #item_detail_close{
     margin: auto;
+    
 }
 
-.deleteBtn{
-    border-radius: 5px;
+.deleteBtn {
+    width: 30px;
+    height: 30px;
+    background-image: url("images/delete_button.png");
+    background-size: 20px 20px; /* scales the image to 10x10 */
+    background-repeat: no-repeat;
+    /* border: solid 10px red; */
     position: absolute;
-    border: solid 10px red;
     top: -10px;
     left: 90px;
-    background-image: "images/delete_button.png";
+    border-radius: 5px;
+}
+
+#emptyFieldError{
+    background-color: red;
+    color: white;
+    /* padding: 1px; */
 }
