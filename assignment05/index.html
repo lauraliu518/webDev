@@ -6,6 +6,7 @@
     </head>
     <body>
         <h1>Seasonal To-Do List</h1>
+        <h2>Click on the "Add" button to add new items. Once items are added, click on their sticky note to view more details about the item. Use the dropdown list on the top right corner to apply filters to items.</h2>
 
         <!-- drop down filter
              add new event button
@@ -206,7 +207,6 @@
                             currentItem.classList.remove("complete");
                             event.currentTarget.innerText = "Complete";
                         }
-                        
                     };
 
                     item_detail_close.onclick = function(event){
@@ -263,6 +263,13 @@
                     h -= 12;
                 }else{
                     apm = "am";
+                }
+
+                if(h < 10){
+                    h = "0" + h;
+                }
+                if(min < 10){
+                    min = "0" + min;
                 }
                 
                 formulatedDate = month+"/"+d+"/"+y+" "+h+":"+min+" "+apm;
