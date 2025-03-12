@@ -136,6 +136,20 @@
                 // const content = document.querySelector('#modal_add_event_content').value;
 
                 if(title.value && season.value && content.value){ //if all fields are filled
+                    const item_detail = document.querySelector("#item_detail");
+                    const item_detail_close = document.querySelector("#item_detail_close");
+                    const item_detail_title = document.querySelector("#item_detail_title");
+                    const item_detail_season = document.querySelector("#item_detail_season");
+                    const item_detail_content = document.querySelector("#item_detail_content");
+                    const item_detail_created_time = document.querySelector("#item_detail_created_time");
+                    const item_detail_accessed_time = document.querySelector("#item_detail_accessed_time");
+                    const item_detail_completionBtn = document.querySelector("#completionBtn");
+                    const item_detail_editBtn = document.querySelector("#editBtn");
+                    const item_detail_saveEditsBtn = document.querySelector("#saveEditsBtn");
+                    const item_detail_left = document.querySelector("#left");
+                    const item_detail_right = document.querySelector("#right");
+
+
                     let removingClick = false;
                     event.preventDefault();
 
@@ -158,35 +172,51 @@
                     deleteBtn.classList.add("hidden");
                     el.appendChild(deleteBtn);
 
+                    const leftBtn = document.createElement("div");
+                    leftBtn.classList.add("leftBtn");
+                    leftBtn.classList.add("hidden");
+                    el.appendChild(leftBtn);
+
+                    const rightBtn = document.createElement("div");
+                    rightBtn.classList.add("rightBtn");
+                    rightBtn.classList.add("hidden");
+                    el.appendChild(rightBtn);
+
                     deleteBtn.onclick = function(event){
                         event.currentTarget.parentElement.remove();
                         // console.log("124Parent"+event.currentTarget.parentElement)
                         removingClick = true;
                     }
-                    el.onmouseover = function(event){
-                        console.log("mouseover")
-                        // event.currentTarget.firstChild[0].classList.remove("hidden");
-                        // console.log("130children"+event.currentTarget.firstChild[0])
-                        deleteBtn.classList.remove("hidden");
-                    }
-                    el.onmouseleave = function(event){
-                        console.log("mouse leave")
-                        // event.currentTarget.firstChild.classList.add("hidden");
-                        deleteBtn.classList.add("hidden");
+
+                    leftBtn.onclick = function(event){
+                        event.stopPropagation();
+                        if(document.querySelectorAll(".item")[0] != event.currentTarget.parentElement){
+                            leftBtn.classList.remove("hidden");
+
+                        }
+
                     }
 
-                    const item_detail = document.querySelector("#item_detail");
-                    const item_detail_close = document.querySelector("#item_detail_close");
-                    const item_detail_title = document.querySelector("#item_detail_title");
-                    const item_detail_season = document.querySelector("#item_detail_season");
-                    const item_detail_content = document.querySelector("#item_detail_content");
-                    const item_detail_created_time = document.querySelector("#item_detail_created_time");
-                    const item_detail_accessed_time = document.querySelector("#item_detail_accessed_time");
-                    const item_detail_completionBtn = document.querySelector("#completionBtn");
-                    const item_detail_editBtn = document.querySelector("#editBtn");
-                    const item_detail_saveEditsBtn = document.querySelector("#saveEditsBtn");
-                    const item_detail_left = document.querySelector("#left");
-                    const item_detail_right = document.querySelector("#right");
+                    el.onmouseover = function(event){
+                        deleteBtn.classList.remove("hidden");
+
+                        if(document.querySelectorAll(".item")[0] != event.currentTarget){
+                            console.log("not first")
+                            leftBtn.classList.remove("hidden");
+                        }
+
+                        if(document.querySelectorAll(".item")[document.querySelectorAll(".item").length-1] != event.currentTarget){
+                            console.log("not last")
+                            rightBtn.classList.remove("hidden");
+                        }
+
+                    }
+                    el.onmouseleave = function(event){
+                        deleteBtn.classList.add("hidden");
+                        leftBtn.classList.add("hidden");
+                        rightBtn.classList.add("hidden");
+                    }
+
 
 
                     // set up a click handler
@@ -204,7 +234,6 @@
                     // </div>
 
                     let currentItem;
-
                     el.onclick = function(event) {
                         currentItem = event.currentTarget;
                         item_detail_title.innerText = event.currentTarget.dataset.title;

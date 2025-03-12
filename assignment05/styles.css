@@ -98,13 +98,34 @@ body {
     width: 30px;
     height: 30px;
     background-image: url("images/delete_button.png");
-    background-size: 20px 20px; /* scales the image to 10x10 */
+    background-size: 20px 20px;
     background-repeat: no-repeat;
-    /* border: solid 10px red; */
     position: absolute;
     top: -10px;
     left: 90px;
     border-radius: 5px;
+}
+
+.leftBtn{
+    width: 20px;
+    height: 20px;
+    background-image: url("images/left_button.png");
+    background-size: 20px 20px; 
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 70px;
+    left: 20px;
+}
+
+.rightBtn{
+    width: 20px;
+    height: 20px;
+    background-image: url("images/right_button.png");
+    background-size: 20px 20px; 
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 70px;
+    right: 20px;
 }
 
 #emptyFieldError{
