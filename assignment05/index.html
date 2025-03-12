@@ -49,7 +49,7 @@
                     <label for="modal_add_event_content">Content</label>
                     <textarea id="modal_add_event_content"></textarea>                    
                 </div>
-                <div id="buttonDiv">
+                <div id="buttonDiv" class="buttonsDiv">
                     <button id="modal_add_event_save">Save</button>
                     <button id="modal_add_event_cancel">Cancel</button>
                 </div>
@@ -63,12 +63,36 @@
         <div id="item_detail" class="hidden">
             <h1 id="item_detail_title">Title</h1>
             <div id="item_detail_container">
+                <!-- basic information -->
                 Season: <span id="item_detail_season">sp</span> <br>
                 <span id="item_detail_content">shfioadsfiajds</span><br>
                 Created: <span id="item_detail_created_time">12</span><br>
                 Last Accessed: <span id="item_detail_accessed_time">13</span><br>
-                <div id="buttonDiv"><button id="item_detail_close" >Close</button></div> 
-                <div id="completionDiv"><button id="completionBtn">Complete</button></div> 
+
+                <!-- new edits -->
+                <span class="edits">New Title: </span><input type="text" id="item_detail_newTitle" class="edits"></input><br>
+                <span class="edits">New Content: </span><input type="text" id="item_detail_newContent" class="edits"></input><br>
+                <label for="item_detail_newSeason" class="edits">New Season</label>
+                <select id="item_detail_newSeason" class="edits">
+                    <option value="">Select a season</option>
+                    <option value="spring">Spring</option>
+                    <option value="summer">Summer</option>
+                    <option value="fall">Fall</option>
+                    <option value="winter">Winter</option>
+                </select><br>
+
+                <!--  buttons  -->
+                <div class="buttonsDiv">
+                    <button id="item_detail_close" >Close</button>
+                    <button id="completionBtn">Complete</button>
+                    <button id="editBtn">Edit</button>
+                    <button id="saveEditsBtn" class="edits">Save Edits</button>
+                    <button id="left" class="hidden">Move Left</button>
+                    <button id="right" class="hidden">Move Right</button>
+                </div> 
+                <!-- <div id="completionDiv" class="buttonsDiv"></div> 
+                <div id="editDiv" class="buttonsDiv"></div>
+                <div id="saveEditDiv" class="buttonsDiv"></div> -->
             </div>
         </div>
 
@@ -159,6 +183,11 @@
                     const item_detail_created_time = document.querySelector("#item_detail_created_time");
                     const item_detail_accessed_time = document.querySelector("#item_detail_accessed_time");
                     const item_detail_completionBtn = document.querySelector("#completionBtn");
+                    const item_detail_editBtn = document.querySelector("#editBtn");
+                    const item_detail_saveEditsBtn = document.querySelector("#saveEditsBtn");
+                    const item_detail_left = document.querySelector("#left");
+                    const item_detail_right = document.querySelector("#right");
+
 
                     // set up a click handler
 
@@ -195,6 +224,43 @@
                         }
                     }
 
+                    
+                    // if(currentItem!=document.querySelector("#existing_items").children[1]){
+                    //     console.log("not first");
+                    //     console.log("All Children:", document.querySelector("#existing_items").children);
+                    //     console.log(document.querySelector("#existing_items").children[1]===currentItem)
+
+
+                    //     item_detail_left.classList.remove("hidden");
+                    //     item_detail_left.onclick = function(event){
+                    //         let prevEl = currentItem.previousElementSibling;
+                    //         currentItem.remove();
+                    //         document.querySelector("#existing_items").insertBefore(currentItem,prevEl);
+
+                    //     }
+                    // }
+                    // document.getElementById('existing_items')
+                    
+                    
+
+                    item_detail_editBtn.onclick = function(event){
+                        console.log("clicked");
+                        for(editHtmlEl of document.querySelectorAll(".edits")){
+                            editHtmlEl.style.display = "block";
+                        }
+                    }
+
+                    item_detail_saveEditsBtn.onclick = function(event){
+                        currentItem.dataset.title = document.querySelector("#item_detail_newTitle").value;
+                        currentItem.dataset.content = document.querySelector("#item_detail_newContent").value;
+                        currentItem.dataset.season = document.querySelector("#item_detail_newSeason").value;
+                        event.currentTarget.dataset.accessedTime = getCurrentTime();
+                        for(editHtmlEl of document.querySelectorAll(".edits")){
+                            editHtmlEl.style.display = "none";
+                        }
+                        item_detail.classList.add("hidden");
+                    }
+
                     item_detail_completionBtn.onclick = function(event){
                         if (currentItem.dataset.completion === "imcomplete") {
                             // Update the item state
@@ -207,11 +273,15 @@
                             currentItem.classList.remove("complete");
                             event.currentTarget.innerText = "Complete";
                         }
+                        event.currentTarget.dataset.accessedTime = getCurrentTime();
                     };
 
                     item_detail_close.onclick = function(event){
                         item_detail.classList.add("hidden");
                         event.currentTarget.dataset.accessedTime = getCurrentTime();
+                        for(editHtmlEl of document.querySelectorAll(".edits")){
+                            editHtmlEl.style.display = "none";
+                        }
                     }
 
                     title.value = "";
@@ -261,6 +331,8 @@
                 if(h > 12){
                     apm = "pm";
                     h -= 12;
+                }else if(h == 12){
+                    apm = "pm";
                 }else{
                     apm = "am";
                 }
@@ -272,6 +344,7 @@
                     min = "0" + min;
                 }
                 
+                // formulatedDate = month+"/"+d+"/"+y+" "+h+":"+min+" "+apm;
                 formulatedDate = month+"/"+d+"/"+y+" "+h+":"+min+" "+apm;
                 return formulatedDate;
             }
