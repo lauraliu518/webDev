@@ -81,15 +81,11 @@ body {
 
 }
 
-#completionDiv{
-    padding: 30px;
+.buttonsDiv{
+    padding: 10px;
     text-align: center;
 }
 
-#buttonDiv{
-    padding: 30px;
-    text-align: center;
-}
 #completionBtn{
     margin:auto;
 }
@@ -115,4 +111,8 @@ body {
     background-color: red;
     color: white;
     /* padding: 1px; */
+}
+
+.edits{
+    display:none;
 }
