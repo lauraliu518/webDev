@@ -8,11 +8,6 @@
         <h1>Seasonal To-Do List</h1>
         <h2>Click on the "Add" button to add new items. Once items are added, click on their sticky note to view more details about the item. Use the dropdown list on the top right corner to apply filters to items.</h2>
 
-        <!-- drop down filter
-             add new event button
-             modal box for adding an event 
-             modal box for viewing an event -->
-
         <select id="filter">
             <option value="showAll">Show All Seasons</option>
             <option value="spring">Spring</option>
@@ -25,6 +20,7 @@
 
         <img id="button_add_event" src="images/add_button.png"></img>
 
+        <!-- add new event bar -->
         <div id="modal_add_event" class="hidden">
             <h2>Add New Event</h2>
             <form>
@@ -56,45 +52,58 @@
             </form>
         </div>
 
+        <!-- items section -->
         <div id="existing_items">            
-            
+            <!-- dynamically created items will be inserted here -->
         </div>
 
+        <!-- event details bar -->
         <div id="item_detail" class="hidden">
             <h1 id="item_detail_title">Title</h1>
             <div id="item_detail_container">
-                <!-- basic information -->
                 Season: <span id="item_detail_season">sp</span> <br>
                 <span id="item_detail_content">shfioadsfiajds</span><br>
                 Created: <span id="item_detail_created_time">12</span><br>
                 Last Accessed: <span id="item_detail_accessed_time">13</span><br>
 
-                <!-- new edits -->
-                <span class="edits">New Title: </span><input type="text" id="item_detail_newTitle" class="edits"></input><br>
-                <span class="edits">New Content: </span><input type="text" id="item_detail_newContent" class="edits"></input><br>
-                <label for="item_detail_newSeason" class="edits">New Season</label>
-                <select id="item_detail_newSeason" class="edits">
-                    <option value="">Select a season</option>
-                    <option value="spring">Spring</option>
-                    <option value="summer">Summer</option>
-                    <option value="fall">Fall</option>
-                    <option value="winter">Winter</option>
-                </select><br>
-
-                <!--  buttons  -->
                 <div class="buttonsDiv">
                     <button id="item_detail_close" >Close</button>
-                    <button id="completionBtn">Complete</button>
-                    <button id="editBtn">Edit</button>
-                    <button id="saveEditsBtn" class="edits">Save Edits</button>
-                    <button id="left" class="hidden">Move Left</button>
-                    <button id="right" class="hidden">Move Right</button>
                 </div> 
-                <!-- <div id="completionDiv" class="buttonsDiv"></div> 
-                <div id="editDiv" class="buttonsDiv"></div>
-                <div id="saveEditDiv" class="buttonsDiv"></div> -->
             </div>
         </div>
+
+        <!-- edit event bar -->
+        <div id="modal_edit_event" class="hidden">
+            <h2>Edit Event</h2>
+            <form>
+              <div id="editEmptyFieldError" class="hidden">
+                <p>Error: You must fill in all the fields.</p>
+              </div>
+              <div>
+                <label for="modal_edit_event_title">New Title:</label>
+                <input type="text" id="modal_edit_event_title">
+              </div>
+              <div>
+                <label for="modal_edit_event_season">New Season:</label>
+                <select id="modal_edit_event_season">
+                  <option value="">Select a season</option>
+                  <option value="spring">Spring</option>
+                  <option value="summer">Summer</option>
+                  <option value="fall">Fall</option>
+                  <option value="winter">Winter</option>
+                </select>
+              </div>
+              <div>
+                <label for="modal_edit_event_content">New Content:</label>
+                <textarea id="modal_edit_event_content"></textarea>
+              </div>
+              <div class="buttonsDiv">
+                <button id="modal_edit_event_save">Save Edits</button>
+                <button id="modal_edit_event_cancel">Cancel</button>
+              </div>
+            </form>
+          </div>
+        
 
         <script>
             // DOM queries
@@ -104,7 +113,15 @@
             const emptyFieldError  = document.querySelector("#emptyFieldError");
             let filterValue = document.querySelector("#filter").value;
 
-            // const item_detail = document.querySelector("#item_detail");
+            // elements for Edit 
+            const modalEditEvent = document.querySelector('#modal_edit_event');
+            const editTitle = document.querySelector('#modal_edit_event_title');
+            const editSeason = document.querySelector('#modal_edit_event_season');
+            const editContent = document.querySelector('#modal_edit_event_content');
+            const editSaveBtn = document.querySelector('#modal_edit_event_save');
+            const editCancelBtn = document.querySelector('#modal_edit_event_cancel');
+            const editEmptyFieldError = document.querySelector('#editEmptyFieldError');
+            let currentItem;
 
             // access the title 
             const title = document.querySelector('#modal_add_event_title');
@@ -113,6 +130,7 @@
             // access the content 
             const content = document.querySelector('#modal_add_event_content');
 
+            //open new event creation panel
             button_add_event.onclick = function(event) {
                 modal_add_event.classList.remove('hidden');
                 document.querySelector("#filter").value = "showAll";
@@ -120,6 +138,8 @@
                     item.classList.remove("hidden");
                 }
             }
+
+            //cancel new event creation
             modal_add_event_cancel.onclick = function(event) {
                 event.preventDefault();
                 title.value = "";
@@ -127,15 +147,10 @@
                 content.value = "";
                 modal_add_event.classList.add('hidden');
             }
-            modal_add_event_save.onclick = function(event) {
-                // // access the title 
-                // const title = document.querySelector('#modal_add_event_title').value;
-                // // access the season
-                // const season = document.querySelector('#modal_add_event_season').value;
-                // // access the content 
-                // const content = document.querySelector('#modal_add_event_content').value;
 
-                if(title.value && season.value && content.value){ //if all fields are filled
+            //save new event button
+            modal_add_event_save.onclick = function(event) {
+                if(title.value && season.value && content.value){ 
                     const item_detail = document.querySelector("#item_detail");
                     const item_detail_close = document.querySelector("#item_detail_close");
                     const item_detail_title = document.querySelector("#item_detail_title");
@@ -143,97 +158,136 @@
                     const item_detail_content = document.querySelector("#item_detail_content");
                     const item_detail_created_time = document.querySelector("#item_detail_created_time");
                     const item_detail_accessed_time = document.querySelector("#item_detail_accessed_time");
-                    const item_detail_completionBtn = document.querySelector("#completionBtn");
-                    const item_detail_editBtn = document.querySelector("#editBtn");
-                    const item_detail_saveEditsBtn = document.querySelector("#saveEditsBtn");
-                    const item_detail_left = document.querySelector("#left");
-                    const item_detail_right = document.querySelector("#right");
 
-
-                    let removingClick = false;
                     event.preventDefault();
 
+                    //Item (sticky note)
                     const el = document.createElement('div');
                     el.classList.add('item');
                     el.classList.add("imcomplete");
                     el.classList.add(season.value);
-                    el.innerText = title.value;
                     el.dataset.content = content.value;
                     el.dataset.season = season.value;
                     el.dataset.title = title.value;
                     el.dataset.completion = "imcomplete";
                     el.dataset.creationTime = getCurrentTime();
                     el.dataset.accessedTime = getCurrentTime();
-                    // add to-do item to the DOM
                     document.getElementById('existing_items').appendChild(el);
 
+                    // title
+                    const titleSpan = document.createElement("span");
+                    titleSpan.classList.add("itemTitle");
+                    titleSpan.innerText = title.value;
+                    el.appendChild(titleSpan);
+
+                    // delete button
                     const deleteBtn = document.createElement("div");
                     deleteBtn.classList.add("deleteBtn");
                     deleteBtn.classList.add("hidden");
                     el.appendChild(deleteBtn);
+                    deleteBtn.onclick = function(event){
+                        event.stopPropagation();
+                        event.currentTarget.parentElement.remove();
+                    }
 
+                    //move left button
                     const leftBtn = document.createElement("div");
                     leftBtn.classList.add("leftBtn");
                     leftBtn.classList.add("hidden");
                     el.appendChild(leftBtn);
+                    leftBtn.onclick = function(event){
+                        event.stopPropagation();
+                        let myElToMove = event.currentTarget.parentElement;
+                        let parent = myElToMove.parentElement;
+                        let prevEl = myElToMove.previousElementSibling;
+                        myElToMove.remove();
+                        parent.insertBefore(myElToMove, prevEl);
+                    }
 
+                    //move right button
                     const rightBtn = document.createElement("div");
                     rightBtn.classList.add("rightBtn");
                     rightBtn.classList.add("hidden");
                     el.appendChild(rightBtn);
-
-                    deleteBtn.onclick = function(event){
-                        event.currentTarget.parentElement.remove();
-                        // console.log("124Parent"+event.currentTarget.parentElement)
-                        removingClick = true;
+                    rightBtn.onclick = function(event){
+                        event.stopPropagation();
+                        let myElToMove = event.currentTarget.parentElement;
+                        let parent = myElToMove.parentElement;
+                        let twoNext = myElToMove.nextElementSibling.nextElementSibling;
+                        myElToMove.remove();
+                        parent.insertBefore(myElToMove, twoNext);
                     }
 
-                    leftBtn.onclick = function(event){
+                    //completion toggle button
+                    const completionBtn = document.createElement("div");
+                    completionBtn.classList.add("completionBtn");
+                    completionBtn.classList.add("hidden");
+                    el.appendChild(completionBtn);
+                    completionBtn.onclick = function(event){
                         event.stopPropagation();
-                        if(document.querySelectorAll(".item")[0] != event.currentTarget.parentElement){
-                            leftBtn.classList.remove("hidden");
+                        //change filter to all seasons when editing to prevent mis-alignment items
+                        document.querySelector("#filter").value = "showAll";
+                        for (item of document.querySelectorAll(".item")){
+                            item.classList.remove("hidden");
+                        }
+                        //toggle current item
+                        if(event.currentTarget.parentElement.classList.contains("complete")){
+                            event.currentTarget.parentElement.classList.remove("complete");
+                            event.currentTarget.parentElement.dataset.completion = "imcomplete";
+                        }else{
+                            event.currentTarget.parentElement.classList.add("complete");
+                            event.currentTarget.parentElement.dataset.completion = "complete";
+                        }
+                    }
 
+                    //edit button
+                    const editBtn = document.createElement('button');
+                    editBtn.classList.add('editBtn');
+                    editBtn.innerText = "Edit";
+                    el.appendChild(editBtn);
+                    editBtn.onclick = function(event) {
+                        event.stopPropagation();
+
+                        //change filter to all seasons when editing to prevent mis-alignment items
+                        document.querySelector("#filter").value = "showAll";
+                        for (item of document.querySelectorAll(".item")){
+                            item.classList.remove("hidden");
                         }
 
-                    }
+                        //fill in the edit panel with current (unmodified) values
+                        currentItem = el;
+                        console.log("prev", currentItem.children)
+                        editTitle.value = el.dataset.title;
+                        editSeason.value = el.dataset.season;
+                        editContent.value = el.dataset.content;
+                        modalEditEvent.classList.remove('hidden');
+                    };
 
+                    //item functions:
+                    //mouse over
                     el.onmouseover = function(event){
                         deleteBtn.classList.remove("hidden");
+                        completionBtn.classList.remove("hidden");
 
                         if(document.querySelectorAll(".item")[0] != event.currentTarget){
-                            console.log("not first")
+                            // console.log("not first")
                             leftBtn.classList.remove("hidden");
                         }
-
                         if(document.querySelectorAll(".item")[document.querySelectorAll(".item").length-1] != event.currentTarget){
-                            console.log("not last")
+                            // console.log("not last")
                             rightBtn.classList.remove("hidden");
                         }
-
                     }
+
+                    //mouse leave
                     el.onmouseleave = function(event){
                         deleteBtn.classList.add("hidden");
+                        completionBtn.classList.add("hidden");
                         leftBtn.classList.add("hidden");
                         rightBtn.classList.add("hidden");
                     }
 
-
-
-                    // set up a click handler
-
-                    // <div id="item_detail" class="hidden">
-                    //     <h1 id="item_detail_title">Title</h1>
-                    //     <div id="item_detail_container">
-                    //         Season: <span id="item_detail_season">sp</span> <br>
-                    //         <span id="item_detail_content">shfioadsfiajds</span><br>
-                    //         Created: <span id="item_detail_created_time">12</span><br>
-                    //         Last Accessed: <span id="item_detail_accessed_time">13</span><br>
-                    //         <div id="buttonDiv"><button id="item_detail_close" >Close</button></div> 
-                    //         <div id="completionDiv"><button id="completionBtn">Complete</button></div> 
-                    //     </div>
-                    // </div>
-
-                    let currentItem;
+                    //mouse click
                     el.onclick = function(event) {
                         currentItem = event.currentTarget;
                         item_detail_title.innerText = event.currentTarget.dataset.title;
@@ -241,70 +295,10 @@
                         item_detail_content.innerText = event.currentTarget.dataset.content;
                         item_detail_created_time.innerText = event.currentTarget.dataset.creationTime;
                         item_detail_accessed_time.innerText = event.currentTarget.dataset.accessedTime;
-                        
-                        if (currentItem.dataset.completion === "imcomplete") {
-                            item_detail_completionBtn.innerText = "Complete";
-                        } else {
-                            item_detail_completionBtn.innerText = "Uncomplete";
-                        }
-
-                        if(!removingClick){
-                            item_detail.classList.remove("hidden");
-                        }
+                        item_detail.classList.remove("hidden");
                     }
 
-                    
-                    // if(currentItem!=document.querySelector("#existing_items").children[1]){
-                    //     console.log("not first");
-                    //     console.log("All Children:", document.querySelector("#existing_items").children);
-                    //     console.log(document.querySelector("#existing_items").children[1]===currentItem)
-
-
-                    //     item_detail_left.classList.remove("hidden");
-                    //     item_detail_left.onclick = function(event){
-                    //         let prevEl = currentItem.previousElementSibling;
-                    //         currentItem.remove();
-                    //         document.querySelector("#existing_items").insertBefore(currentItem,prevEl);
-
-                    //     }
-                    // }
-                    // document.getElementById('existing_items')
-                    
-                    
-
-                    item_detail_editBtn.onclick = function(event){
-                        console.log("clicked");
-                        for(editHtmlEl of document.querySelectorAll(".edits")){
-                            editHtmlEl.style.display = "block";
-                        }
-                    }
-
-                    item_detail_saveEditsBtn.onclick = function(event){
-                        currentItem.dataset.title = document.querySelector("#item_detail_newTitle").value;
-                        currentItem.dataset.content = document.querySelector("#item_detail_newContent").value;
-                        currentItem.dataset.season = document.querySelector("#item_detail_newSeason").value;
-                        event.currentTarget.dataset.accessedTime = getCurrentTime();
-                        for(editHtmlEl of document.querySelectorAll(".edits")){
-                            editHtmlEl.style.display = "none";
-                        }
-                        item_detail.classList.add("hidden");
-                    }
-
-                    item_detail_completionBtn.onclick = function(event){
-                        if (currentItem.dataset.completion === "imcomplete") {
-                            // Update the item state
-                            currentItem.dataset.completion = "complete";
-                            currentItem.classList.add("complete");
-                            // Change button text for the current modal display
-                            event.currentTarget.innerText = "Uncomplete";
-                        } else {
-                            currentItem.dataset.completion = "imcomplete";
-                            currentItem.classList.remove("complete");
-                            event.currentTarget.innerText = "Complete";
-                        }
-                        event.currentTarget.dataset.accessedTime = getCurrentTime();
-                    };
-
+                    //Close item detail bar
                     item_detail_close.onclick = function(event){
                         item_detail.classList.add("hidden");
                         event.currentTarget.dataset.accessedTime = getCurrentTime();
@@ -313,11 +307,14 @@
                         }
                     }
 
+                    //reset input values for next entry
                     title.value = "";
                     season.value = "";
                     content.value = "";
 
+                    //hide add item bar
                     modal_add_event.classList.add("hidden");
+
                 }else{ //show field empty error
                     event.preventDefault();
                     emptyFieldError.classList.remove("hidden");
@@ -327,6 +324,35 @@
                 }
             }
 
+            //save edits
+            editSaveBtn.onclick = function(event) {
+                event.preventDefault();
+                if (editTitle.value && editSeason.value && editContent.value) {
+                    let prevSeason = currentItem.dataset.season;
+                    currentItem.dataset.title = editTitle.value;
+                    currentItem.dataset.season = editSeason.value;
+                    currentItem.dataset.content = editContent.value;
+                    
+                    //update tile
+                    let titleSpan = currentItem.querySelector('.itemTitle');
+                    if (titleSpan) {
+                        titleSpan.innerText = editTitle.value;
+                    }
+                    
+                    //update season
+                    currentItem.classList.remove(prevSeason);
+                    currentItem.classList.add(currentItem.dataset.season);
+                    modalEditEvent.classList.add('hidden');
+
+                }else{//some fields are empty, show error message
+                    emptyFieldError.classList.remove("hidden");
+                    setTimeout(function(){
+                        emptyFieldError.classList.add("hidden");
+                    }, 2000);
+                }
+            };
+
+            //handle dropdown menu change
             const filter = document.querySelector("#filter");
             filter.onchange = function(event){
                 filterValue = event.currentTarget.value;
@@ -345,9 +371,9 @@
                         }
                     }
                 }
-                // console.log(items[0].dataset.season)
             }
 
+            //formulate current time
             function getCurrentTime(){
                 // Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getFullYear
                 let month, d, y, h, min, apm;
@@ -365,7 +391,6 @@
                 }else{
                     apm = "am";
                 }
-
                 if(h < 10){
                     h = "0" + h;
                 }
@@ -373,14 +398,8 @@
                     min = "0" + min;
                 }
                 
-                // formulatedDate = month+"/"+d+"/"+y+" "+h+":"+min+" "+apm;
                 formulatedDate = month+"/"+d+"/"+y+" "+h+":"+min+" "+apm;
                 return formulatedDate;
-            }
-
-            function displayItemDetail(item){
-                item_detail.classList.remove("hidden");
-                // console.log(item.currentTarget.dataset.content);
             }
         </script>
     </body>
