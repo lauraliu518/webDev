@@ -32,7 +32,7 @@
                     <input type="text" id="modal_add_event_title">
                 </div>
                 <div>
-                    <label for="modal_add_event_season">Season</label>
+                    <label for="modal_add_event_season">Season:</label>
                     <select id="modal_add_event_season">
                         <option value="">Select a season</option>
                         <option value="spring">Spring</option>
@@ -42,7 +42,7 @@
                     </select>
                 </div>
                 <div>
-                    <label for="modal_add_event_content">Content</label>
+                    <label for="modal_add_event_content">Content:</label>
                     <textarea id="modal_add_event_content"></textarea>                    
                 </div>
                 <div id="buttonDiv" class="buttonsDiv">
@@ -99,7 +99,6 @@
               </div>
               <div class="buttonsDiv">
                 <button id="modal_edit_event_save">Save Edits</button>
-                <button id="modal_edit_event_cancel">Cancel</button>
               </div>
             </form>
           </div>
@@ -119,7 +118,6 @@
             const editSeason = document.querySelector('#modal_edit_event_season');
             const editContent = document.querySelector('#modal_edit_event_content');
             const editSaveBtn = document.querySelector('#modal_edit_event_save');
-            const editCancelBtn = document.querySelector('#modal_edit_event_cancel');
             const editEmptyFieldError = document.querySelector('#editEmptyFieldError');
             let currentItem;
 
