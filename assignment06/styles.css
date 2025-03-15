@@ -9,7 +9,7 @@ body {
 
 /* pre-game phase */
 #levelSelection{
-    
+
 }
 
 
@@ -30,3 +30,21 @@ body {
 #playAgainBtn{
 
 }
+
+#leaderboard {
+    width: 300px;
+    border: 1px solid #ccc;
+}
+  
+.leaderboard-header, .leaderboard-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+}
+  
+.leaderboard-header {
+    font-weight: bold;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+}
+  

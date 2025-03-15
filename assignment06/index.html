@@ -1,3 +1,6 @@
+<!-- leaderboard  -->
+
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -5,6 +8,8 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
+        <audio id="incorrect" src="media/wrong.wav"></audio>
+        <audio id="correct" src="media/correct.wav"></audio>
         <h1>Matching Game</h1>
 
         <div id="panel_start">
@@ -27,9 +32,50 @@
             <div>Your time: <span id="time_yourtime">0</span></div>
             <div>Best time: <span id="time_besttime">0</span></div>
             <div id="playAgainBtn">Play Again</div>
+            <div id="leaderboard">
+                <div class="leaderboard-header"> 
+                  <div class="column score">Score</div>
+                  <div class="column name">Name</div>
+                </div>
+                
+                <!-- Row 1 -->
+                <div class="leaderboard-row">
+                  <div class="column score"></div>
+                  <div class="column name"></div>
+                </div>
+                
+                <!-- Row 2 -->
+                <div class="leaderboard-row">
+                  <div class="column score"></div>
+                  <div class="column name"></div>
+                </div>
+                
+                <!-- Row 3 -->
+                <div class="leaderboard-row">
+                  <div class="column score"></div>
+                  <div class="column name"></div>
+                </div>
+                
+                <!-- Row 4 -->
+                <div class="leaderboard-row">
+                  <div class="column score"></div>
+                  <div class="column name"></div>
+                </div>
+                
+                <!-- Row 5 -->
+                <div class="leaderboard-row">
+                  <div class="column score"></div>
+                  <div class="column name"></div>
+                </div>
+              </div>
+              
         </div>
 
         <script>
+            //audio references
+            const incorrectSound = document.querySelector("#incorrect");
+            const correctSound = document.querySelector("#correct");
+
             // DOM references
             const panel_start = document.getElementById('panel_start');
             const panel_gameplaying = document.getElementById('panel_gameplaying');
@@ -61,114 +107,24 @@
 
             // click the button to start the game
             button_playgame.onclick = function(event) {
-                //setDifficulty
                 setDifficulty();
-
+                panel_start.classList.add('hidden'); 
                 gamePlay();
-                
-
-                // startTime = Date.now();
-                // clockIntervalId = setInterval(function(){
-                //     currentTime = Date.now();
-                //     elapsedTime = currentTime-startTime;
-                //     time_elapsed.innerText = parseInt(elapsedTime/1000);
-                //     // console.log("start time", startTime);
-                //     // console.log("now time", currentTime);
-                //     // console.log("elapsed time", elapsedTime);
-                // }, 1000);
-
-                // // given: an array of image asset paths
-                // const assets = ['snorlax.png', 'electrabuzz.png', 'chansey.png', 'oddish.png',
-                //     'pikachu.png', 'paras.png', 'arcanine.png', 'ponita.png',
-                //     'venonat.png', 'eggsecute.png', 'machop.png', 'pidgey.png',
-                //     'psyduck.png', 'tauros.png', 'vulpix.png', 'gloom.png',
-                //     'krabby.png', 'butterfree.png', 'bulbasaur.png', 'clefairy.png',
-                //     'koffing.png', 'goldeen.png', 'magikarp.png', 'beedrill.png',
-                //     'lapras.png', 'meowth.png', 'ekans.png', 'jigglypuff.png',
-                //     'horsea.png', 'polywog.png', 'sandshrew.png', 'rattata.png',
-                //     'gengar.png', 'eevee.png', 'bellsprout.png', 'squirtle.png',
-                //     'seel.png', 'caterpie.png'];
-
-                // panel_start.classList.add('hidden'); //hide pregame panel
-                // panel_gameplaying.classList.remove('hidden'); //show game play panel
-
-                // // create the tiles for our game
-                // // select 6 media at random and put them into a new array
-                // const selectedImages = [];
-                // for (let i = 0; i < totalSelectedImgCount ; i++) { //easy 6, medium 10, hard 15
-                //     let index = parseInt( Math.random() * assets.length );
-                //     selectedImages.push( assets[index] );
-                //     selectedImages.push( assets[index] );
-                //     assets.splice( index, 1 );
-                // }
-
-                // // create our tokens that the user can click on
-                // for (let image of selectedImages) {
-                //     const el = document.createElement('img');
-                //     el.dataset.secretimage = `media/${image}`;
-                //     el.dataset.allowclick = true;
-                //     el.src = 'media/pokeball.png';
-                //     token_container.appendChild(el);
-
-                //     el.onclick = function(event) {
-                //         if(el.dataset.allowclick == "true"){
-                //             // is this the user's first click?
-                //             if (token1 == false) {
-                //                 el.src = el.dataset.secretimage;
-                //                 event.currentTarget.dataset.allowclick = false;
-                //                 token1 = el;   
-                //             }
-                //             // is this the second click?
-                //             else {
-                //                 // are they the same?
-                //                 token2 = el;
-                //                 el.src = el.dataset.secretimage;
-
-                //                 if (token1.dataset.secretimage == token2.dataset.secretimage) {
-                //                     // match!
-                //                     token1.dataset.allowclick = false;
-                //                     token2.dataset.allowclick = false;
-                //                     token1 = false;
-                //                     token2 = false;
-
-                //                     //if all pairs are found go to game over panel
-                //                     correctPairs += 1;
-                //                     if(correctPairs == totalSelectedImgCount){
-                //                         panel_gameplaying.classList.add("hidden");
-
-                //                         //your time
-                //                         totalTime = parseInt(elapsedTime/1000);
-                                        
-                //                        gameOver();
-                //                     }
-                //                 }
-                //                 else {
-                //                     setTimeout( function() {
-                //                         // the user didn't match :(
-                //                         token1.src = 'media/pokeball.png';
-                //                         token2.src = 'media/pokeball.png';
-
-                //                         token1.dataset.allowclick = true;
-                //                         token2.dataset.allowclick = true;         
-                                        
-                //                         token1 = false;
-                //                         token2 = false;                       
-                //                     }, 500);
-                //                 }
-                //             }
-
-                //             // reset the tokens to allow for a second click 
-                //         }
-
-                //         //event.currentTarget.src = event.currentTarget.dataset.secretImage;
-                //     }
-                // }
-                
-                
-
             }
 
-
+            function setDifficulty(){
+                difficulty = levelSelection.value;
+                if(difficulty == "easy"){
+                    totalSelectedImgCount = 6;
+                    token_container.style.width = "400px";
+                }else if(difficulty == "medium"){
+                    totalSelectedImgCount = 10;
+                    token_container.style.width = "500px";
+                }else{
+                    totalSelectedImgCount = 15;
+                    token_container.style.width = "600px";
+                }
+            }
 
             function getCurrentTime(){
                 now = new Date();
@@ -184,9 +140,6 @@
                     currentTime = Date.now();
                     elapsedTime = currentTime-startTime;
                     time_elapsed.innerText = parseInt(elapsedTime/1000);
-                    // console.log("start time", startTime);
-                    // console.log("now time", currentTime);
-                    // console.log("elapsed time", elapsedTime);
                 }, 1000);
 
                 // given: an array of image asset paths
@@ -201,18 +154,10 @@
                     'gengar.png', 'eevee.png', 'bellsprout.png', 'squirtle.png',
                     'seel.png', 'caterpie.png'];
 
-                panel_start.classList.add('hidden'); //hide pregame panel
-                panel_gameplaying.classList.remove('hidden'); //show game play panel
+                //create pokeballs array
+                let selectedImages = randomizedSelection(assets, totalSelectedImgCount); // choose selected images (without pair)
+                selectedImages = randomizedSelection(selectedImages.concat(selectedImages), 2*totalSelectedImgCount); // generate pair, randomize pair location
 
-                // create the tiles for our game
-                // select 6 media at random and put them into a new array
-                const selectedImages = [];
-                for (let i = 0; i < totalSelectedImgCount ; i++) { //easy 6, medium 10, hard 15
-                    let index = parseInt( Math.random() * assets.length );
-                    selectedImages.push( assets[index] );
-                    selectedImages.push( assets[index] );
-                    assets.splice( index, 1 );
-                }
 
                 // create our tokens that the user can click on
                 for (let image of selectedImages) {
@@ -223,33 +168,17 @@
                     token_container.appendChild(el);
 
                     el.onclick = function(event) {
-                        console.log("-----------new---------------");
-                        console.log("pairs: ", correctPairs);
-                        console.log("token1: ", token1);
-                        console.log("token2: ", token2);
-                        
                         if(el.dataset.allowclick == "true"){
-                            // is this the user's first click?
-                            if (token1 == false) {
-                                // console.log("i am here");
+                            if (token1 == false) { //first click
                                 el.src = el.dataset.secretimage;
                                 event.currentTarget.dataset.allowclick = false;
                                 token1 = el;   
-                                // console.log("token 1:");
-                                // console.log(token1);    
-                            }
-                            // is this the second click?
-                            else {
-                                // are they the same?
+                            }else { //second click, check match
                                 token2 = el;
                                 el.src = el.dataset.secretimage;
 
-                                // console.log("second click");
-                                // console.log(token1);
-                                // console.log(token2);
-
-                                if (token1.dataset.secretimage == token2.dataset.secretimage) {
-                                    // match!
+                                if (token1.dataset.secretimage == token2.dataset.secretimage) { //match
+                                    correctSound.play();
                                     token1.dataset.allowclick = false;
                                     token2.dataset.allowclick = false;
                                     token1 = false;
@@ -267,7 +196,8 @@
                                         gameOver();
                                     }
                                 }
-                                else {
+                                else { //mismatch
+                                    incorrectSound.play();
                                     token1.dataset.allowclick = true;
                                     token2.dataset.allowclick = true;     
                                     
@@ -279,17 +209,13 @@
                                     token1 = false;
                                     token2 = false;   
 
-                                    setTimeout( function() {
-                                        // the user didn't match :(
+                                    setTimeout( function() { //flip back to pokeball image
                                         t1.src = 'media/pokeball.png';
                                         t2.src = 'media/pokeball.png';
                                     }, 500);
                                 }
                             }
                         }
-                        
-                        
-
                     }
                 }         
             }
@@ -305,12 +231,14 @@
                     if(localStorage.getItem("bestTime") > totalTime){//beat the record
                         localStorage.setItem("bestTime", totalTime); //set new record
                         time_besttime.innerText = `${totalTime} - New High Score!`;
+                        enterLeaderboard();
                     }else{
                         time_besttime.innerText = localStorage.getItem("bestTime");
                     }
                 }else{//no previous record
                     localStorage.setItem("bestTime", totalTime);
-                    time_besttime.innerText = totalTime;
+                    time_besttime.innerText = `${totalTime} - New High Score!`;
+                    enterLeaderboard();
                 }
 
                 //remove previous pokeballs from container
@@ -324,26 +252,22 @@
                     gamePlay();
                 }
             }
+            
+            function randomizedSelection(originalArr, selectCount){
+                let selectedArr = [];
 
-            function setDifficulty(){
-                difficulty = levelSelection.value;
-                if(difficulty == "easy"){
-                    totalSelectedImgCount = 6;
-                    token_container.style.width = "400px";
-                }else if(difficulty == "medium"){
-                    totalSelectedImgCount = 10;
-                    token_container.style.width = "500px";
-                }else{
-                    totalSelectedImgCount = 15;
-                    token_container.style.width = "600px";
+                for (let i = 0; i < selectCount ; i++) { //easy 6, medium 10, hard 15
+                    let index = parseInt( Math.random() * originalArr.length );
+                    selectedArr.push( originalArr[index] );
+                    originalArr.splice( index, 1 );
                 }
+                
+                return selectedArr;
             }
-            /* TO-DO:
-                - generate interface (start screen, play screen, game over screen)
-                - randomly "deal" a series of tokens, face down
-                - allow the user to click on a token to reveal its face
-                - allow the user to click on a second token to check if the tokens are the same
-            */
+
+            function enterLeaderboard(){
+
+            }
             
         </script>
     </body>
