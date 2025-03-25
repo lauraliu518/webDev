@@ -3,34 +3,58 @@ body {
     background-color: #000;
     color: #fff;
     font-family: sans-serif;
+    text-align: center;
 }
+
 .hidden {
     display: none;
 }
 
 /* pre-game phase */
-#levelSelection{
+#button_playgame, #levelSelection{
+    margin: 20px;
+    font-size: 20px;
+    font-family: sans-serif;
+    padding: 15px;
+    border-radius: 15px;
+}
 
+#button_playgame:hover{
+    background-color: lightcoral;
 }
 
 
 /* game place phase */
-#token_container {
-    width: 400px;
+#panel_gameplaying {
+    position: relative;
 }
+  
+#token_container {
+    margin-top: 30px;
+    position: absolute;
+    width: 400px;
+    top: 100%;
+    left: 520px;
+}
+
+
 #token_container img {
     width: 100px;
 }
 
 
 /* game over phase */
+#panel_gameover{
+    text-align: center;
+}
+
 #gameoverTitle{
 
 }
 
 #playAgainBtn{
     background-color: #fff;
-    color:#000
+    color:#000;
 }
 
 #leaderboard {
