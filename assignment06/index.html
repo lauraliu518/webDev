@@ -32,43 +32,22 @@
             <div>Your time: <span id="time_yourtime">0</span></div>
             <div>Best time: <span id="time_besttime">0</span></div>
             <div id="playAgainBtn">Play Again</div>
-            <div id="leaderboard">
+            <form id="leaderboardEntry" class="hidden">
+                Name: <input id="leaderboardEntryName"></input>
+                <button id="leaderboardEntrySubmitBtn">Confirm</button>
+            </form>
+            
+            <div id="leaderboard" class="hidden" >
                 <div class="leaderboard-header"> 
-                  <div class="column score">Score</div>
-                  <div class="column name">Name</div>
+                  Top score: <span id="score1">997</span> seconds by <span id="name1">Anonymous</span>
                 </div>
-                
-                <!-- Row 1 -->
-                <div class="leaderboard-row">
-                  <div class="column score"></div>
-                  <div class="column name"></div>
+                <div class="leaderboard-header"> 
+                Top score: <span id="score2">998</span> seconds by <span id="name2">Anonymous</span>
                 </div>
-                
-                <!-- Row 2 -->
-                <div class="leaderboard-row">
-                  <div class="column score"></div>
-                  <div class="column name"></div>
+                <div class="leaderboard-header"> 
+                Top score: <span id="score3">999</span> seconds by <span id="name3">Anonymous</span>
                 </div>
-                
-                <!-- Row 3 -->
-                <div class="leaderboard-row">
-                  <div class="column score"></div>
-                  <div class="column name"></div>
-                </div>
-                
-                <!-- Row 4 -->
-                <div class="leaderboard-row">
-                  <div class="column score"></div>
-                  <div class="column name"></div>
-                </div>
-                
-                <!-- Row 5 -->
-                <div class="leaderboard-row">
-                  <div class="column score"></div>
-                  <div class="column name"></div>
-                </div>
-              </div>
-              
+            </div>
         </div>
 
         <script>
@@ -99,10 +78,31 @@
 
             //game over refs
             let totalTime;
-            let time_yourtime = document.querySelector("#time_yourtime");
-            let time_besttime = document.querySelector("#time_besttime");
-            let playAgainBtn = document.querySelector("#playAgainBtn");
+            const time_yourtime = document.querySelector("#time_yourtime");
+            const time_besttime = document.querySelector("#time_besttime");
+            const playAgainBtn = document.querySelector("#playAgainBtn");
+            let topThreeScores = [997,998,999];
+            let topThreeNames = ["Anonymous", "Anonymous", "Anonymous"];
+            const leaderboard = document.querySelector("#leaderboard");
+            const leaderboardEntry = document.querySelector("#leaderboardEntry");
+            const leaderboardEntryName = document.querySelector("#leaderboardEntryName");
+            const leaderboardEntrySubmitBtn  = document.querySelector("#leaderboardEntrySubmitBtn");
+            const score1 = document.querySelector("#score1");
+            const score2 = document.querySelector("#score2");
+            const score3 = document.querySelector("#score3");
+            const name1 = document.querySelector("#name1");
+            const name2 = document.querySelector("#name2");
+            const name3 = document.querySelector("#name3");
 
+
+
+            //if previous leaderboard data exist, load them into the current game
+            if (localStorage.getItem("leaderboard")){
+                for(let i = 0; i < 3; i++){
+                    topThreeScores[i] = localStorage.getItem("leaderboard")[i];
+                    topThreeNames[i] = localStorage.getItem("leaderboard")[i+3];
+                }
+            }
 
 
             // click the button to start the game
@@ -155,9 +155,15 @@
                     'seel.png', 'caterpie.png'];
 
                 //create pokeballs array
-                let selectedImages = randomizedSelection(assets, totalSelectedImgCount); // choose selected images (without pair)
-                selectedImages = randomizedSelection(selectedImages.concat(selectedImages), 2*totalSelectedImgCount); // generate pair, randomize pair location
-
+                // let selectedImages = randomizedSelection(assets, totalSelectedImgCount); // choose selected images (without pair)
+                // selectedImages = randomizedSelection(selectedImages.concat(selectedImages), 2*totalSelectedImgCount); // generate pair, randomize pair location
+                const selectedImages = [];
+                for (let i = 0; i < totalSelectedImgCount ; i++) { //easy 6, medium 10, hard 15
+                     let index = parseInt( Math.random() * assets.length );
+                     selectedImages.push( assets[index] );
+                     selectedImages.push( assets[index] );
+                     assets.splice( index, 1 );
+                 }
 
                 // create our tokens that the user can click on
                 for (let image of selectedImages) {
@@ -225,22 +231,48 @@
 
                 //your time
                 time_yourtime.innerText = totalTime;
-                
-                //best time
-                if(localStorage.getItem("bestTime")){ //previous record exists
-                    if(localStorage.getItem("bestTime") > totalTime){//beat the record
-                        localStorage.setItem("bestTime", totalTime); //set new record
-                        time_besttime.innerText = `${totalTime} - New High Score!`;
-                        enterLeaderboard();
-                    }else{
-                        time_besttime.innerText = localStorage.getItem("bestTime");
-                    }
-                }else{//no previous record
-                    localStorage.setItem("bestTime", totalTime);
-                    time_besttime.innerText = `${totalTime} - New High Score!`;
-                    enterLeaderboard();
+
+                //restore localstorage leaderboard datan if any
+                if(localStorage.getItem("topScores")){
+                    topThreeScores = JSON.parse(localStorage.getItem("topScores"));
+                }
+                if(localStorage.getItem("topNames")){
+                    topThreeNames = JSON.parse(localStorage.getItem("topNames"));
                 }
 
+                //best time
+                if(localStorage.getItem("bestTime")){ //previous record exists
+                        if(localStorage.getItem("bestTime") > totalTime){//beat the record
+                            localStorage.setItem("bestTime", totalTime); //set new record
+                            time_besttime.innerText = `${totalTime} - New High Score!`;
+                            
+                        }else{
+                            time_besttime.innerText = localStorage.getItem("bestTime");
+                        }
+                    }else{//no previous record
+                        localStorage.setItem("bestTime", totalTime);
+                        time_besttime.innerText = `${totalTime} - New High Score!`;
+                    }
+
+                //new leaderboard entry
+                if(totalTime < topThreeScores[2]){ //new top 3 score
+                    //show name entry panel
+                    leaderboardEntry.classList.remove("hidden");
+                }else{ //not new top 3 score, display old leaderboard
+                    leaderboard.classList.remove("hidden");
+                }
+
+                //display leaderboard
+                leaderboardEntrySubmitBtn.onclick = function(e){
+                    event.preventDefault();
+                    //modify local score tracking array and push to local storage
+                    updateTrackingArray();
+                    //use score tracking array to fill leaderboard
+                    fillLeaderboard();
+                    //display updated leaderboard
+                    leaderboard.classList.remove("hidden");
+                }
+                
                 //remove previous pokeballs from container
                 for (let i = token_container.children.length - 1; i >= 0; i--) {
                     token_container.children[i].remove();
@@ -265,9 +297,42 @@
                 return selectedArr;
             }
 
-            function enterLeaderboard(){
-
+            function fillLeaderboard(){
+                score1.innerText = topThreeScores[0];
+                score2.innerText = topThreeScores[1];
+                score3.innerText = topThreeScores[2];
+                name1.innerText = topThreeNames[0];
+                name2.innerText = topThreeNames[1];
+                name3.innerText = topThreeNames[2];
             }
+
+            function updateTrackingArray(){
+                if(totalTime < topThreeScores[0]){
+                    topThreeNames[2] = topThreeNames[1];
+                    topThreeScores[2] = topThreeScores[1];
+                    topThreeNames[1] = topThreeNames[0];
+                    topThreeScores[1] = topThreeScores[0];
+                    topThreeNames[0] = leaderboardEntryName.value;
+                    topThreeScores[0] = totalTime;
+                    localStorage.setItem("topNames", JSON.stringify(topThreeNames));
+                    localStorage.setItem("topScores", JSON.stringify(topThreeScores));
+                }else if(totalTime < topThreeScores[1]){
+                    topThreeNames[2] = topThreeNames[1];
+                    topThreeScores[2] = topThreeScores[1];
+                    topThreeNames[1] = leaderboardEntryName.value;
+                    topThreeScores[1] = totalTime;
+                    localStorage.setItem("topNames", JSON.stringify(topThreeNames));
+                    localStorage.setItem("topScores", JSON.stringify(topThreeScores));
+                }else if(totalTime < topThreeScores[2]){
+                    topThreeNames[2] = leaderboardEntryName.value;
+                    topThreeScores[2] = totalTime;
+                    localStorage.setItem("topNames", JSON.stringify(topThreeNames));
+                    localStorage.setItem("topScores", JSON.stringify(topThreeScores));
+                }else{
+                    console.log("error with leaderboard entry");
+                }
+            }
+
             
         </script>
     </body>
