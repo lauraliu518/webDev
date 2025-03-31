@@ -19,7 +19,7 @@
                 <option value="bg-party">Party Scene</option>
             </select>
             <select id="levelSelection">
-                <option value="easy">Difficulty level</option>
+                <option>Difficulty level</option>
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
@@ -71,6 +71,7 @@
             const levelSelection = document.querySelector("#levelSelection");
             const bgSelection = document.querySelector("#bgSelection");
             let storedBg = "";
+            let storedDifficulty = "";
 
 
             //game play refs and variables
@@ -123,14 +124,24 @@
                     bgSelection.value = storedBg;
                 }
 
+                //restore previously stored background graphic
+                if(localStorage.getItem("difficulty")){
+                    storedDifficulty = localStorage.getItem("difficulty");
+                    levelSelection.value = storedDifficulty;
+                }
+
                 panel_start.classList.remove("hidden");
 
 
                 //set background graphic
                 bgSelection.onchange = function(e){
-                    console.log(document.querySelector("body").style);
                     document.querySelector("body").style.backgroundImage = `url('media/${bgSelection.value}.png')`;
                     localStorage.setItem("bg", bgSelection.value);
+                }
+
+                //store difficulty to local storage
+                levelSelection.onchange = function(e){
+                    localStorage.setItem("difficulty", levelSelection.value);
                 }
 
 
@@ -316,10 +327,14 @@
                     totalSelectedImgCount = 10;
                     token_container.style.width = "500px";
                     token_container.style.marginLeft = "-250px";
-                }else{
+                }else if(difficulty == "hard"){
                     totalSelectedImgCount = 15;
                     token_container.style.width = "600px";
                     token_container.style.marginLeft = "-300px";
+                }else{
+                    totalSelectedImgCount = 6;
+                    token_container.style.width = "400px";
+                    token_container.style.marginLeft = "-200px";
                 }
             }
 
