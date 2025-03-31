@@ -105,18 +105,17 @@
             const name3 = document.querySelector("#name3");
 
 
-
-            //if previous leaderboard data exist, load them into the current game
-            if (localStorage.getItem("leaderboard")){
-                for(let i = 0; i < 3; i++){
-                    topThreeScores[i] = localStorage.getItem("leaderboard")[i];
-                    topThreeNames[i] = localStorage.getItem("leaderboard")[i+3];
-                }
-            }
-
             gameStart();
 
             function gameStart(){
+
+                //restore previous leaderboard data exist, load them into the current game
+                if (localStorage.getItem("leaderboard")){
+                    for(let i = 0; i < 3; i++){
+                        topThreeScores[i] = localStorage.getItem("leaderboard")[i];
+                        topThreeNames[i] = localStorage.getItem("leaderboard")[i+3];
+                    }
+                }
                 //restore previously stored background graphic
                 if(localStorage.getItem("bg")){
                     storedBg = localStorage.getItem("bg");
@@ -132,7 +131,6 @@
 
                 panel_start.classList.remove("hidden");
 
-
                 //set background graphic
                 bgSelection.onchange = function(e){
                     event.preventDefault();
@@ -145,7 +143,6 @@
                     event.preventDefault();
                     localStorage.setItem("difficulty", levelSelection.value);
                 }
-
 
                 // click the button to start the game
                 button_playgame.onclick = function(event) {
