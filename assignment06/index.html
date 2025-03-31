@@ -4,14 +4,22 @@
         <title>Matching Game</title>
         <link rel="stylesheet" href="styles.css">
     </head>
-    <body>
+    <body id="body">
         <audio id="incorrect" src="media/wrong.wav"></audio>
         <audio id="correct" src="media/correct.wav"></audio>
         <h1>Matching Game</h1>
 
         <div id="panel_start">
             <p>Play a fast-paced game of memory and try and beat your best time</p>
+            <select id="bgSelection">
+                <option>Background</option>
+                <option value="bg-battle">Battle Scene</option>
+                <option value="bg-galar">Galar Scene</option>
+                <option value="bg-gym">Gym Scene</option>
+                <option value="bg-party">Party Scene</option>
+            </select>
             <select id="levelSelection">
+                <option value="easy">Difficulty level</option>
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
@@ -61,6 +69,8 @@
             // pre-game refs
             const button_playgame = document.getElementById('button_playgame');
             const levelSelection = document.querySelector("#levelSelection");
+            const bgSelection = document.querySelector("#bgSelection");
+            let storedBg = "";
 
 
             //game play refs and variables
@@ -105,7 +115,24 @@
             gameStart();
 
             function gameStart(){
+                //restore previously stored background graphic
+                if(localStorage.getItem("bg")){
+                    storedBg = localStorage.getItem("bg");
+                    document.querySelector("body").style.backgroundImage = `url("media/${storedBg}.png")`;
+                    bgSelection.value = storedBg;
+                }
+
                 panel_start.classList.remove("hidden");
+
+
+                //set background graphic
+                bgSelection.onchange = function(e){
+                    console.log(document.querySelector("body").style);
+                    document.querySelector("body").style.backgroundImage = `url('media/${bgSelection.value}.png')`;
+                    localStorage.setItem("bg", bgSelection.value);
+                }
+
+
                 // click the button to start the game
                 button_playgame.onclick = function(event) {
                     setDifficulty();
@@ -343,7 +370,6 @@
                 }
             }
 
-            
         </script>
     </body>
 </html>

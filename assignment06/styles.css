@@ -1,9 +1,19 @@
+/* Background graphics references */
+/* bg-party.png from https://www.pokemon.com/us/pokemon-virtual-backgrounds/ */
+/* bg-gym.png from https://www.pokemon.com/us/pokemon-virtual-backgrounds/ */
+/* bg-battle.png from https://www.pokemon.com/us/pokemon-virtual-backgrounds/ */
+/* bg-galar.png from https://www.pokemon.com/us/pokemon-virtual-backgrounds/ */
+
 body {
     font-size: 30px;
+    text-shadow: -3px 0 black, 0 3px black, 3px 0 black, 0 -3px black;
     background-color: #000;
-    color: #fff;
+    color: rgb(200, 200, 230);
     font-family: sans-serif;
     text-align: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    min-height: 100vh;
 }
 
 .hidden {
@@ -11,16 +21,17 @@ body {
 }
 
 /* pre-game phase */
-#button_playgame, #levelSelection{
+#button_playgame, #levelSelection, #bgSelection{
     margin: 20px;
     font-size: 20px;
     font-family: sans-serif;
     padding: 15px;
     border-radius: 15px;
+    border: none;
 }
 
 #button_playgame:hover{
-    background-color: lightcoral;
+    background-color: rgb(200, 200, 230);
 }
 
 
@@ -47,19 +58,40 @@ body {
 /* game over phase */
 #panel_gameover{
     text-align: center;
+    position: relative;
 }
 
 #playAgainBtn{
+    position: absolute;
     background-color: #fff;
     color:#000;
+    text-shadow: none;
+    left: 50%;
+    margin-left: -150px;
+    width: 300px;
+    top: 300px;
+    border-radius: 50px;
+    font-size: 30px;
+}
+
+#playAgainBtn:hover{
+    background-color: rgb(200, 200, 230);
 }
 
 #leaderboard {
+    position: absolute;
+    text-shadow: none;
+    margin-top: 30px;
+    margin-left: -700px;
+    left: 50%;
     font-size: 20px;
-    width: 100%;
-    border: 1px solid #ccc;
+    width: 1400px;
+    padding: 10px;
     display: flex;
     justify-content: space-between;
+    background-color: rgb(255,255,255);
+    opacity: 0.8;
+    color: black;
 }
   
 .leaderboard-header, .leaderboard-row {
@@ -68,7 +100,5 @@ body {
   
 .leaderboard-header {
     font-weight: bold;
-    /* background-color: #f0f0f0; */
-    border-bottom: 1px solid #ccc;
 }
   
