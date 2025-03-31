@@ -95,6 +95,7 @@
             const leaderboardEntry = document.querySelector("#leaderboardEntry");
             const leaderboardEntryName = document.querySelector("#leaderboardEntryName");
             const leaderboardEntrySubmitBtn  = document.querySelector("#leaderboardEntrySubmitBtn");
+            let entryRecorded = false;
             const score1 = document.querySelector("#score1");
             const score2 = document.querySelector("#score2");
             const score3 = document.querySelector("#score3");
@@ -279,12 +280,15 @@
                 //display leaderboard
                 leaderboardEntrySubmitBtn.onclick = function(e){
                     event.preventDefault();
-                    //modify local score tracking array and push to local storage
-                    updateTrackingArray();
-                    //use score tracking array to fill leaderboard
-                    fillLeaderboard();
-                    //display updated leaderboard
-                    leaderboard.classList.remove("hidden");
+                    if(entryRecorded == false){
+                        entryRecorded = true;
+                        //modify local score tracking array and push to local storage
+                        updateTrackingArray();
+                        //use score tracking array to fill leaderboard
+                        fillLeaderboard();
+                        //display updated leaderboard
+                        leaderboard.classList.remove("hidden");
+                    }
                 }
                 
                 //remove previous pokeballs from container
@@ -295,6 +299,7 @@
                 //replay game
                 playAgainBtn.onclick = function(e){
                     panel_gameover.classList.add("hidden");
+                    entryRecorded = false;
                     gameStart();
                 }
             }
