@@ -135,12 +135,14 @@
 
                 //set background graphic
                 bgSelection.onchange = function(e){
+                    event.preventDefault();
                     document.querySelector("body").style.backgroundImage = `url('media/${bgSelection.value}.png')`;
                     localStorage.setItem("bg", bgSelection.value);
                 }
 
                 //store difficulty to local storage
                 levelSelection.onchange = function(e){
+                    event.preventDefault();
                     localStorage.setItem("difficulty", levelSelection.value);
                 }
 
