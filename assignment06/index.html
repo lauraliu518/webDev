@@ -140,15 +140,17 @@
                     'seel.png', 'caterpie.png'];
 
                 //create pokeballs array
-                // let selectedImages = randomizedSelection(assets, totalSelectedImgCount); // choose selected images (without pair)
-                // selectedImages = randomizedSelection(selectedImages.concat(selectedImages), 2*totalSelectedImgCount); // generate pair, randomize pair location
-                const selectedImages = [];
-                for (let i = 0; i < totalSelectedImgCount ; i++) { //easy 6, medium 10, hard 15
-                     let index = parseInt( Math.random() * assets.length );
-                     selectedImages.push( assets[index] );
-                     selectedImages.push( assets[index] );
-                     assets.splice( index, 1 );
-                 }
+                let selectedImages = randomizedSelection(assets, totalSelectedImgCount); // choose selected images (without pair)
+                selectedImages = randomizedSelection(selectedImages.concat(selectedImages), 2*totalSelectedImgCount); // generate pair, randomize pair location
+                
+                //graphics prior to randomizaiton for debugging
+                // const selectedImages = [];
+                // for (let i = 0; i < totalSelectedImgCount ; i++) { //easy 6, medium 10, hard 15
+                //      let index = parseInt( Math.random() * assets.length );
+                //      selectedImages.push( assets[index] );
+                //      selectedImages.push( assets[index] );
+                //      assets.splice( index, 1 );
+                //  }
 
                 // create our tokens that the user can click on
                 for (let image of selectedImages) {
