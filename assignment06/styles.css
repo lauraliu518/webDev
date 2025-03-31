@@ -48,10 +48,6 @@ body {
     text-align: center;
 }
 
-#gameoverTitle{
-
-}
-
 #playAgainBtn{
     background-color: #fff;
     color:#000;
@@ -61,11 +57,11 @@ body {
     font-size: 20px;
     width: 100%;
     border: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
 }
   
 .leaderboard-header, .leaderboard-row {
-    display: flex;
-    justify-content: space-between;
     padding: 5px 10px;
 }
   

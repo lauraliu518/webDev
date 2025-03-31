@@ -27,23 +27,23 @@
 
         <div id="panel_gameover" class="hidden">
             <h1 id="gameoverTitle">Game Over</h1>
-            <div>Your time: <span id="time_yourtime">0</span></div>
-            <div>Best time: <span id="time_besttime">0</span></div>
+            <div>Your time: <span id="time_yourtime">0</span> seconds</div>
+            <div>Best time: <span id="time_besttime">0</span> </div>
             <div id="playAgainBtn">Play Again</div>
             <form id="leaderboardEntry" class="hidden">
-                Name: <input id="leaderboardEntryName"></input>
+                Name: <input id="leaderboardEntryName" value=" "></input>
                 <button id="leaderboardEntrySubmitBtn">Confirm</button>
             </form>
             
             <div id="leaderboard" class="hidden" >
                 <div class="leaderboard-header"> 
-                  Top score: <span id="score1">997</span> seconds by <span id="name1">Anonymous</span>
+                    First Place: <br> <span id="score1">997</span> seconds by <span id="name1">Anonymous</span>
                 </div>
                 <div class="leaderboard-header"> 
-                Top score: <span id="score2">998</span> seconds by <span id="name2">Anonymous</span>
+                    Second Place: <br> <span id="score2">998</span> seconds by <span id="name2">Anonymous</span>
                 </div>
                 <div class="leaderboard-header"> 
-                Top score: <span id="score3">999</span> seconds by <span id="name3">Anonymous</span>
+                    Third Place: <br> <span id="score3">999</span> seconds by <span id="name3">Anonymous</span>
                 </div>
             </div>
         </div>
@@ -102,43 +102,30 @@
                 }
             }
 
+            gameStart();
 
-            // click the button to start the game
-            button_playgame.onclick = function(event) {
-                setDifficulty();
-                panel_start.classList.add('hidden'); 
-                gamePlay();
-            }
-
-            function setDifficulty(){
-                difficulty = levelSelection.value;
-                if(difficulty == "easy"){
-                    totalSelectedImgCount = 6;
-                    token_container.style.width = "400px";
-                }else if(difficulty == "medium"){
-                    totalSelectedImgCount = 10;
-                    token_container.style.width = "500px";
-                }else{
-                    totalSelectedImgCount = 15;
-                    token_container.style.width = "600px";
+            function gameStart(){
+                panel_start.classList.remove("hidden");
+                // click the button to start the game
+                button_playgame.onclick = function(event) {
+                    setDifficulty();
+                    panel_start.classList.add('hidden'); 
+                    gamePlay();
                 }
-            }
-
-            function getCurrentTime(){
-                now = new Date();
-                console.log(now.getMilliseconds());
-                return now.getMilliseconds();
             }
 
             function gamePlay(){
                 correctPairs = 0;
-                panel_gameplaying.classList.remove("hidden");
+                time_elapsed.innerText = "0";
+
                 startTime = Date.now();
-                setInterval(function(){
+                
+                clockIntervalId = setInterval(function(){
                     currentTime = Date.now();
                     elapsedTime = currentTime-startTime;
                     time_elapsed.innerText = parseInt(elapsedTime/1000);
                 }, 1000);
+                panel_gameplaying.classList.remove("hidden");
 
                 // given: an array of image asset paths
                 const assets = ['snorlax.png', 'electrabuzz.png', 'chansey.png', 'oddish.png',
@@ -225,31 +212,31 @@
             }
 
             function gameOver(){
+                
                 panel_gameover.classList.remove("hidden");
 
                 //your time
                 time_yourtime.innerText = totalTime;
 
                 //restore localstorage leaderboard datan if any
-                if(localStorage.getItem("topScores")){
+                if(localStorage.getItem("topScores") && localStorage.getItem("topNames")){
                     topThreeScores = JSON.parse(localStorage.getItem("topScores"));
-                }
-                if(localStorage.getItem("topNames")){
                     topThreeNames = JSON.parse(localStorage.getItem("topNames"));
+                    fillLeaderboard();
                 }
 
                 //best time
                 if(localStorage.getItem("bestTime")){ //previous record exists
                         if(localStorage.getItem("bestTime") > totalTime){//beat the record
                             localStorage.setItem("bestTime", totalTime); //set new record
-                            time_besttime.innerText = `${totalTime} - New High Score!`;
+                            time_besttime.innerText = `${totalTime} seconds - New High Score!`;
                             
                         }else{
-                            time_besttime.innerText = localStorage.getItem("bestTime");
+                            time_besttime.innerText = `${localStorage.getItem("bestTime")} seconds`;
                         }
                     }else{//no previous record
                         localStorage.setItem("bestTime", totalTime);
-                        time_besttime.innerText = `${totalTime} - New High Score!`;
+                        time_besttime.innerText = `${totalTime} seconds - New High Score!`;
                     }
 
                 //new leaderboard entry
@@ -279,8 +266,28 @@
                 //replay game
                 playAgainBtn.onclick = function(e){
                     panel_gameover.classList.add("hidden");
-                    gamePlay();
+                    gameStart();
                 }
+            }
+
+            function setDifficulty(){
+                difficulty = levelSelection.value;
+                if(difficulty == "easy"){
+                    totalSelectedImgCount = 6;
+                    token_container.style.width = "400px";
+                }else if(difficulty == "medium"){
+                    totalSelectedImgCount = 10;
+                    token_container.style.width = "500px";
+                }else{
+                    totalSelectedImgCount = 15;
+                    token_container.style.width = "600px";
+                }
+            }
+
+            function getCurrentTime(){
+                now = new Date();
+                console.log(now.getMilliseconds());
+                return now.getMilliseconds();
             }
             
             function randomizedSelection(originalArr, selectCount){
