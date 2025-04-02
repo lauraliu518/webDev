@@ -16,9 +16,10 @@
         <h1>Assignment 07</h1>
 
         <?php
+            error_reporting(0);
 
             $error = $_GET['error'];
-            if ($error) {
+            if ($error=="missingstuff") {
 
         ?>
 

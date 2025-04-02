@@ -1,5 +1,5 @@
 <!-- syntaxes -->
-
+hello
 <?php
         //variables
         $myint = 5;
@@ -23,8 +23,12 @@
         if($$myInt > 0){
             print "hello";
         }
-        else if(){}
-        else{}
+        else if($$myInt < 0){
+
+        }
+        else{
+                
+        }
 
         for($i = 0; $i < 10; $i++){
 
