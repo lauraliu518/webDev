@@ -1,19 +1,99 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Assignment 07</title>
+        <title>What's Your Simpsons Character?</title>
         <style>
+            * {
+                box-sizing: border-box;
+            }
+            
+            body {
+                margin: 0;
+                padding: 30px;
+                font-family: sans-serif;
+                background: #F7DE00; 
+                line-height: 1.6;
+                min-height: 100vh;
+                position: relative;
+            }
+            
+            h1 {
+                background-color: #3F51B5; 
+                color: #FFFFFF;
+                margin: 0;
+                padding: 20px;
+                text-align: center;
+                font-size: 2.5em;
+            }
+            
+            .container {
+                max-width: 800px;
+                margin: 30px auto;
+                background: #FFFFFF; 
+                padding: 25px;
+                border-radius: 8px;
+            }
+            
             .error {
-                background-color: red;
-                color: white;
+                background-color: #8B572A;
+                color: #FFFFFF;
                 padding: 10px;
+                margin-bottom: 20px;
+                border-radius: 4px;
+                text-align: center;
+            }
+            
+            form {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            form label,
+            form select {
+                display: block;
                 width: 100%;
-                height: 50px;
+            }
+            
+            form label {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            
+            form select {
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 1em;
+            }
+            
+            input[type="submit"] {
+                background-color: #F48FB1;
+                color: #3F51B5;          
+                padding: 10px;
+                border: none;
+                border-radius: 4px;
+                font-size: 1.1em;
+                margin-top: 10px;
+            }
+            
+            input[type="submit"]:hover {
+                background-color: #F9ABC9; 
+            }
+            
+            img {
+                display: block;
+                margin: 20px auto;
+                max-width: 100%;
+                height: auto;
+                border-radius: 4px;
+                /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
             }
         </style>
+
+
     </head>
     <body>
-        <h1>Assignment 07</h1>
+        <h1>What's Your Simpsons Character?</h1>
 
         <?php
             include('config.php');

@@ -29,3 +29,10 @@ lisa
 marge
 lisa
 marge
+bart
+bart
+marge
+marge
+marge
+marge
+homer

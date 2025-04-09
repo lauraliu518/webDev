@@ -1,31 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        .bar{
-            border: solid 1px black;
-            height: 50px;
-            padding: 10px;
-            margin-left: 20px;
-            margin-right: 20px;
-        }
+<style>
+    * {
+      box-sizing: border-box;
+    }
 
-        #bartBar{
-            background-color: lightblue;
-        }
+    body {
+      margin: 0;
+      padding: 30px;
+      font-family: sans-serif;
+      background: lightpink; 
+      min-height: 100vh;
+      position: relative;
+    }
 
-        #lisaBar{
-            background-color: lightyellow;
-        }
+    h1 {
+      background-color: #3F51B5; 
+      color: #FFFFFF;
+      margin: 0 0 20px 0;
+      padding: 20px;
+      text-align: center;
+      font-size: 2.5em;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
 
-        #homerBar{
-            background-color: lightgreen;
-        }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #FFFFFF; 
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-        #margeBar{
-            background-color: pink;
-        }
-    </style>
+    .bar {
+      border: solid 1px #ccc;
+      height: 50px;
+      padding: 10px;
+      margin: 10px 20px;
+      color: #fff;
+      line-height: 50px;
+      font-weight: bold;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+
+   
+    #bartBar {
+      background-color: #3F51B5; 
+    }
+
+    #lisaBar {
+      background-color: #F7DE00; 
+      color: #000; 
+    }
+
+    #homerBar {
+      background-color: #8B572A; 
+    }
+
+    #margeBar {
+      background-color: #F48FB1; 
+      color: #3F51B5; 
+    }
+
+    a {
+      display: inline-block;
+      margin: 20px;
+      text-align: center;
+      color: #3F51B5;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
@@ -62,9 +110,13 @@
             }
         }
         $bartPercent = $bartCount/($bartCount+$homerCount+$lisaCount+$margeCount);
+  
         $homerPercent = $homerCount/($bartCount+$homerCount+$lisaCount+$margeCount);
+
         $lisaPercent = $lisaCount/($bartCount+$homerCount+$lisaCount+$margeCount);
+        
         $margePercent = $margeCount/($bartCount+$homerCount+$lisaCount+$margeCount);
+        
     ?>
     <div id="barsContainer">
         <div id="bartBar" class="bar" style="width:<?php echo $bartPercent*100;?>%;">
