@@ -3,26 +3,69 @@
     <head>
         <title>Assignment 8</title>
         <style>
-            table {
-                width: 100%;
+body {
+                margin: 0;
+                padding: 0;
             }
-
-            .error {
-                background-color: red;
-                color: #FFFFFF;
-                padding: 10px;
-                margin-bottom: 20px;
-                border-radius: 4px;
+            h1 {
                 text-align: center;
+                margin-top: 30px;
             }
-
+            #selectionBar {
+                display: flex;
+                justify-content: center;
+                margin: 30px 0 40px 0;
+            }
+            #selectionBar a div {
+                color: black;
+                padding: 12px 28px;
+                font-weight: 500;
+            }
+            form {
+                background: #fff;
+                margin: 0 auto 30px auto;
+                padding: 30px 32px 24px 32px;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            ul {
+                background: #fff;
+                margin: 18px auto;
+                padding: 18px 24px;
+                border-radius: 7px;
+            }
+            ul li {
+                font-size: 1.08rem;
+                color: #222;
+                padding: 6px 0;
+            }
             .saved {
-                background-color: lightgreen;
+                background-color: #43a047;
                 color: #FFFFFF;
                 padding: 10px;
                 margin-bottom: 20px;
                 border-radius: 4px;
                 text-align: center;
+            }
+            .error {
+                background-color: #e53935;
+                color: #FFFFFF;
+                padding: 10px;
+                margin-bottom: 20px;
+                text-align: center;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            form input[type="submit"] {
+                background: #lightpurple;
+                color: #000;
+                border: none;
+                border-radius: 4px;
+                padding: 12px 0;
+                font-size: 1rem;
+                font-weight: 600;
             }
         </style>
     </head>
