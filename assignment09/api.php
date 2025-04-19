@@ -1,12 +1,12 @@
 <?php
 
     if (!isset($_GET['command'])) {
-        print "error";
+        print "error: no command found";
         exit();
     }
 
     // connect to our database
-    $path = '/home/databases';
+    $path = 'databases';
     $db = new SQLite3($path.'/chat.db');
 
     // API call to save a message to the 'messages' table
@@ -29,7 +29,7 @@
             print "success";
         }
         else {
-            print "error";
+            print "pass error";
         }
     }
 
@@ -74,6 +74,40 @@
         print json_encode($send_back);
     }
 
+    else if ($_GET['command'] == 'authenticate' && isset($_POST['username']) && isset($_POST['password'])) {
+        $sql = "SELECT username, password FROM users WHERE username = :username";
+        $statement = $db->prepare($sql);
+        $statement->bindValue(':username', $_POST['username']);
+        $result = $statement->execute();
+        $send_back = [];
+        if($result){
+            while ($row = $result->fetchArray()) {
+                // store the result in an object
+                $userpairs = [];
+                $userpairs['username'] = $row[0];
+                $userpairs['password'] = $row[1];
+
+                // push the object onto the 'messages' array
+                array_push($send_back, $userpairs);
+            }
+            print json_encode($send_back);
+        }else{
+            print "An error occured while authenticating user.";
+        }
+    }
+
+    else if ($_GET['command'] == 'addnewuser' && isset($_POST['username']) && isset($_POST['password'])) {
+        $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
+        $statement = $db->prepare($sql);
+        $statement->bindValue(':username', $_POST['username']);
+        $statement->bindValue(':password', $_POST['password']);
+        $result = $statement->execute();
+        if($result){
+            print "php saved user name";
+        }else{
+            print "An error occured while adding new user.";
+        }
+    }
 
     // invalid command
     else {

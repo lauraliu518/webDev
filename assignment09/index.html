@@ -46,6 +46,7 @@
         // obtain DOM references to our UI elements
         const panel_login = document.getElementById('panel_login');
         const panel_login_username_textbox = document.getElementById('panel_login_username_textbox');
+        const panel_login_password_textbox = document.getElementById('panel_login_password_textbox');
         const panel_login_submit_button = document.getElementById('panel_login_submit_button');
         const panel_login_error_missinginfo = document.getElementById('panel_login_error_missinginfo');
         const panel_login_error_incorrect = document.getElementById('panel_login_error_incorrect');
@@ -72,8 +73,55 @@
             // form is filled out, allow them to log in
             // NOTE: you will need to update this code to handle (1) new users and (2) returning users
             else {
+                performFetch({
+                    url: 'api.php?command=authenticate',
+                    method: 'post',
+                    data: {
+                        username: panel_login_username_textbox.value,
+                        password: panel_login_password_textbox.value
+                    },
+                    success: function (data) {
+                        let jsonData = JSON.parse(data);
+                        console.log(jsonData);
+
+                        //first time user
+                        if(jsonData.length == 0){
+                            console.log("new user");
+                            performFetch({
+                                url: 'api.php?command=addnewuser',
+                                method: 'post',
+                                data: {
+                                    username: panel_login_username_textbox.value,
+                                    password: panel_login_password_textbox.value
+                                },
+                                success: function (data) {
+                                    console.log("new user saved");
+                                },
+                                error: function (error) {
+                                    console.log("ERROR:", error);
+                                }
+                            })
+                            panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
+                        }
+                        //returning user, check password
+                        else{
+                            if (panel_login_password_textbox.value == jsonData[0].password){
+                                username = panel_login_username_textbox.value;
+                                panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
+                            }else{
+                                panel_login_error_incorrect.classList.remove('hidden');
+                            }
+                        }
+                    },
+                    error: function (error) {
+                    }
+                });
+
+
+
+                //if user is authenticated
                 username = panel_login_username_textbox.value;
-                panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
+                // panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
             }
         });
 
@@ -233,7 +281,13 @@
 
             // add to message panel
             panel_messages.appendChild(div);
-        }        
+        }   
+
+        function addNewUser(username, password){
+            
+        }
+        
+
 
     </script>
 </body>
