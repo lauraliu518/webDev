@@ -71,11 +71,11 @@
         }
 
         // encode the object as a JSON string and send it to the client
-        echo json_encode($send_back);
+        print json_encode($send_back);
     }
 
     else if ($_GET['command'] == 'authenticate' && isset($_POST['username']) && isset($_POST['password'])) {
-        $sql = "SELECT COUNT(*) FROM users WHERE (username = :username AND password = :password)";
+        $sql = "SELECT username, password FROM users WHERE (username = :username AND password = :password)";
         $statement = $db->prepare($sql);
         $statement->bindValue(':username', $_POST['username']);
         $statement->bindValue(':password', $_POST['password']);
@@ -83,15 +83,14 @@
         $send_back = [];
         if($result){
             while ($row = $result->fetchArray()) {
-                // store the result in an object
-                // $userpairs = [];
-                // $userpairs['username'] = $row[0];
-                // $userpairs['password'] = $row[1];
+                $userpair = [];
+                $userpair['username'] = $row[0];
+                $userpair['password'] = $row[1];
 
                 // push the object onto the 'messages' array
-                array_push($send_back, $row);
+                array_push($send_back, $userpair);
             }
-            echo json_encode($send_back);
+            print json_encode($send_back);
         }else{
             print "An error occured while authenticating user.";
         }

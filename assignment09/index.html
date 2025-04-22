@@ -55,6 +55,8 @@
         const message_input_textbox = document.getElementById('message_input_textbox');
         const message_input_submit_button = document.getElementById('message_input_submit_button');
 
+        let detectingMagicEightBallQuestion = false;
+
         // working variables
         let username;
         let id = 0;
@@ -98,9 +100,10 @@
                                     console.log("new user saved");
                                 },
                                 error: function (error) {
-                                    console.log("ERROR:", error);
+                                    console.log("ERROR: An error occurred while saving the new user");
                                 }
                             })
+                            username = panel_login_username_textbox.value;
                             panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
                         }
                         //returning user, check password
@@ -114,6 +117,7 @@
                         }
                     },
                     error: function (error) {
+                        console.log("ERROR: An error occurred while authenticating the user");
                     }
                 });
             }
@@ -171,8 +175,8 @@
 
                 // if an error occurs we should try this operation again in 1 second
                 error: function (error) {
-                    console.log("ERROR:", error);
-                    setTimeout(getMessages, 1000);
+                    console.log(error);
+                    // setTimeout(getMessages, 1000);
                 }
             });
         }
@@ -191,14 +195,32 @@
             }
 
             //check for /help
-            if(message_input_textbox.value == "\help"){
+            if(message_input_textbox.value == "/help"){
+                message_input_textbox.disabled = true;
+                console.log("sys message detected");
                 createMessage({
-                    username: "SYSTEM MESSAGE",
+                    username: "(private) SYSTEM MESSAGE",
                     message: "system message details",
                     privateMessage: true
                 })
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
+            }
 
-            }else{
+            else if(message_input_textbox.value=="/magic8ball"){
+                message_input_textbox.disabled = true;
+                detectingMagicEightBallQuestion = true;
+                console.log("magic8 detected");
+                createMessage({
+                    username: "(private) SYSTEM MESSAGE",
+                    message: "system message details",
+                    privateMessage: true
+                })
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
+            }
+            
+            else{
                 // disable the text box so the user can't modify it while the request 
                 // to save the message is being processed by the server
                  message_input_textbox.disabled = true;
