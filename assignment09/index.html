@@ -116,12 +116,6 @@
                     error: function (error) {
                     }
                 });
-
-
-
-                //if user is authenticated
-                username = panel_login_username_textbox.value;
-                // panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
             }
         });
 
@@ -132,6 +126,7 @@
         panel_messages.onmouseout = function (e) {
             interactingFlag = false;
         }
+    
 
         // function to retrieve previously posted messages
         async function getMessages() {
@@ -195,31 +190,43 @@
                 return;
             }
 
-            // disable the text box so the user can't modify it while the request 
-            // to save the message is being processed by the server
-            message_input_textbox.disabled = true;
+            //check for /help
+            if(message_input_textbox.value == "\help"){
+                createMessage({
+                    username: "SYSTEM MESSAGE",
+                    message: "system message details",
+                    privateMessage: true
+                })
 
-            // contact the server with our username and message
-            performFetch({
-                url: 'api.php?command=savemessage',
-                method: 'post',
-                data: {
-                    username: username,
-                    message: message_input_textbox.value
-                },
+            }else{
+                // disable the text box so the user can't modify it while the request 
+                // to save the message is being processed by the server
+                 message_input_textbox.disabled = true;
 
-                // upon success (or error), unlock the text box and clear it for the next message
-                success: function (data) {
-                    console.log(data);
-                    message_input_textbox.disabled = false;
-                    message_input_textbox.value = '';
-                },
-                error: function (error) {
-                    console.log("ERROR:", error);
-                    message_input_textbox.disabled = false;
-                    message_input_textbox.value = '';
-                }
-            })
+                // contact the server with our username and message
+                performFetch({
+                    url: 'api.php?command=savemessage',
+                    method: 'post',
+                    data: {
+                        username: username,
+                        message: message_input_textbox.value
+                    },
+
+                    // upon success (or error), unlock the text box and clear it for the next message
+                    success: function (data) {
+                        console.log(data);
+                        message_input_textbox.disabled = false;
+                        message_input_textbox.value = '';
+                    },
+                    error: function (error) {
+                        console.log("ERROR:", error);
+                        message_input_textbox.disabled = false;
+                        message_input_textbox.value = '';
+                    }
+                })
+            }
+
+            
         });
 
 
