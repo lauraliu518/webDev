@@ -61,6 +61,20 @@
         let username;
         let id = 0;
         let interactingFlag = false;
+        let randomResponse;
+        let listeningForMagic8Ball = false;
+
+        async function fetchAndStoreRandomResponses() {
+            try {
+                const response = await fetch("datasets/Magic-8-Ball/magic8ball.json");
+                const jsonData = await response.json();
+                randomResponse = jsonData; 
+                console.log(randomResponse);
+            } catch (error) {
+                console.error("Failed to fetch and store random responses:", error);
+            }
+        }
+        fetchAndStoreRandomResponses();
 
         // login button
         panel_login_submit_button.addEventListener('click', function (e) {
@@ -93,8 +107,7 @@
                                 url: 'api.php?command=addnewuser',
                                 method: 'post',
                                 data: {
-                                    username: panel_login_username_textbox.value,
-                                    password: panel_login_password_textbox.value
+                                    username: panel_login_username_textbox.value
                                 },
                                 success: function (data) {
                                     console.log("new user saved");
@@ -193,9 +206,17 @@
             if (message_input_textbox.value.length == 0) {
                 return;
             }
+            
+            if(listeningForMagic8Ball){
+                message_input_textbox.disabled = true;
+                magic8ball(message_input_textbox.value);
+                listeningForMagic8Ball = false;
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
+            }
 
             //check for /help
-            if(message_input_textbox.value == "/help"){
+            else if(message_input_textbox.value == "/help"){
                 message_input_textbox.disabled = true;
                 console.log("sys message detected");
                 createMessage({
@@ -206,18 +227,24 @@
                 message_input_textbox.disabled = false;
                 message_input_textbox.value = '';
             }
-
-            else if(message_input_textbox.value=="/magic8ball"){
+            //condition2
+            else if(message_input_textbox.value.startsWith("/magic8ball")){
                 message_input_textbox.disabled = true;
-                detectingMagicEightBallQuestion = true;
-                console.log("magic8 detected");
-                createMessage({
-                    username: "(private) SYSTEM MESSAGE",
-                    message: "system message details",
-                    privateMessage: true
-                })
-                message_input_textbox.disabled = false;
-                message_input_textbox.value = '';
+                if(message_input_textbox.value.length == 11){
+                    console.log("magic8 detected: no user input");
+                    createMessage({
+                        username: "(private) SYSTEM MESSAGE",
+                        message: "You must supply a question for the magic 8 ball.",
+                        privateMessage: true
+                    })
+                    message_input_textbox.disabled = false;
+                    message_input_textbox.value = '';   
+                    listeningForMagic8Ball = true;
+                }
+                else{
+                    magic8ball(message_input_textbox.value);
+                }
+
             }
             
             else{
@@ -312,8 +339,29 @@
             panel_messages.appendChild(div);
         }   
 
-        function addNewUser(username, password){
-            
+        function magic8ball(entireMessage){
+            let userInput = entireMessage;
+            console.log("magic8 detected: user input: " + userInput);
+            let message = `${username} just shook the magic 8 ball!\n Question: ${userInput}\n Answer: ` + randomResponse[parseInt(Math.random() * randomResponse.length)];
+
+            performFetch({
+                url: 'api.php?command=savemessage',
+                method: 'post',
+                data: {
+                    username: username,
+                    message: message
+                },
+                success: function (data) {
+                    console.log(data);
+                    message_input_textbox.disabled = false;
+                    message_input_textbox.value = '';
+                },
+                error: function (error) {
+                    console.log("ERROR:", error);
+                    message_input_textbox.disabled = false;
+                    message_input_textbox.value = '';
+                }
+            })
         }
         
 

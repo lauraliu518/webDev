@@ -75,10 +75,9 @@
     }
 
     else if ($_GET['command'] == 'authenticate' && isset($_POST['username']) && isset($_POST['password'])) {
-        $sql = "SELECT username, password FROM users WHERE (username = :username AND password = :password)";
+        $sql = "SELECT username, password FROM users WHERE (username = :username)";
         $statement = $db->prepare($sql);
         $statement->bindValue(':username', $_POST['username']);
-        $statement->bindValue(':password', $_POST['password']);
         $result = $statement->execute();
         $send_back = [];
         if($result){
