@@ -26,6 +26,9 @@
         <div class="toolbar">
             <button class="primary" @click="showAddNewItemPanel">Add Item</button>
             <button class="primary" @click="saveToDoList">Save To-Do List</button>
+            <select id="filterCategory" v-model="filterCategory">
+                <option v-for="(item, index) in filteredCategories" :key="item" :value="item" >{{item}}</option>
+            </select>
         </div>
 
 
@@ -93,11 +96,18 @@
         <div class="todo-grid" id="panelExistingToDoItems" v-if="isExistingToDoListPanelVisible">
 
             <!-- Sample to-do list item, replace with your own dynamically -->
-
-            <div :class="{'todo-card': true, 'complete': item.completed}" v-for="(item, index) in existingItems" :key="index">
+	
+            <div :class="{'todo-card': true, 'complete': item.completed}" v-for="(item, index) in filteredItems" :key="index">
                 <span class="category-tag">{{item.category}}</span>
                 <h3>{{item.title}}</h3>
                 <p>{{item.description}}</p>
+
+                <div class="card-actions">
+                    <button class="light">Edit</button>
+                    <button class="light">
+                        <span v-if="item.completed" @click="markAsActive(item)">Mark as Active</span>
+                        <span v-else @click="markAsComplete(item)">Mark as Complete</span>
+
 
                 <div class="card-actions">
                     <button class="light" @click="showEditPanel(item)">Edit</button>
@@ -108,24 +118,6 @@
                     <button class="light" @click="deleteItem(item)">Delete</button>
                 </div>
             </div>
-
-            <!--
-            <div class="todo-card">
-                <span class="category-tag">Uncategorized</span>
-                <h3>File Taxes</h3>
-                <p>Complete and file 2025 taxes.</p>
-
-                <div class="card-actions">
-                    <button class="light">Edit</button>
-                    <button class="light">
-                        <span>Mark as Active</span>
-                        <span>Mark as Complete</span>
-                    </button>
-                    <button class="light">Delete</button>
-                </div>
-            </div>
-            -->
-
         </div>
 
     </div>
@@ -157,9 +149,20 @@
 
                     existingItems: [],
                     
-                    currentItem: null
+                    currentItem: null,
+
+                    filterCategory: 'All',
+                    filteredItems: [],
+                    filteredCategories: ['All', 'Personal', 'School', 'Home', 'Work', 'Play']
                 }
             
+            },
+
+            watch: {
+                filterCategory() {
+                    console.log("filterCategory changed to: ", this.filterCategory);
+                    this.updateFilteredItems();
+                }
             },
 
             methods: {
@@ -263,7 +266,38 @@
                         }
                     })
                 },
+
+                updateFilteredItems: function() {
+                    if (this.filterCategory === 'All') {
+                        this.filteredItems = this.existingItems;
+                    } else {
+                        let filteredArray = [];
+                        for (let i = 0; i < this.existingItems.length; i++) {
+                            let item = this.existingItems[i];
+                            
+                            if (item.category === this.filterCategory) {
+                                filteredArray.push(item);
+                            }
+                        }
+                        this.filteredItems = filteredArray;
+                    }
+                },
             },
+            mounted: function() {
+                performFetch({
+                    url: 'api.php?command=load',
+                    method: 'POST',
+                    success: (data) => {
+                        this.existingItems = JSON.parse(data);
+                        this.updateFilteredItems();
+                        console.log(this.existingItems);
+                    },
+                    error: (error) => {
+                        console.log("error loading list: " + error);
+                    }
+                });
+            }
+
         
         }).mount("#app");
 

@@ -12,7 +12,20 @@ if ($_GET['command'] == 'save') {
         echo "success";
         exit();
     }
-} else {
+} 
+else if ($_GET['command'] == 'load') {
+    if ($filename) {
+        $data = file_get_contents($filename);
+        if ($data) {
+            print $data;
+        } 
+    } else {
+        print [];
+    }
+    exit();
+}
+
+else {
     echo "error: invalid request";
     exit();
 }
