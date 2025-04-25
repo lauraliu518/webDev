@@ -248,31 +248,8 @@
                     data: {
                         username: username
                     },
-                    success: function (data) {
-                        console.log(data);
-                        let message = `${username} rolled a ${data} on a 100-sided die`;
-                        performFetch({
-                            url: 'api.php?command=savemessage',
-                            method: 'post',
-                            data: {
-                                username: "SYSTEM MESSAGE",
-                                message: message
-                            },
-                            success: function (data) {
-                                console.log(data);
-                            },
-                            error: function (error) {
-                                console.log("ERROR:", error);
-                            }
-                        })
-                        message_input_textbox.disabled = false;
-                        message_input_textbox.value = '';
-                    },
-                    error: function (error) {
-                        console.log("ERROR:", error);
-                        message_input_textbox.disabled = false;
-                        message_input_textbox.value = '';
-                    }
+                    success: function (data) {},
+                    error: function (error) {}
                 });
             }
 
@@ -281,6 +258,10 @@
                 message_input_textbox.disabled = true;
 
                 let numberOfRollsToShow = message_input_textbox.value.split(" ")[1];
+                if(!numberOfRollsToShow){
+                    numberOfRollsToShow = 10;
+                }
+                
                 if(isNaN(numberOfRollsToShow)){
                     createMessage({
                         username: "(private) SYSTEM MESSAGE",
@@ -295,28 +276,8 @@
                             username: username,
                             numberOfRollsToShow: numberOfRollsToShow
                         },
-                        success: function (data) {
-                            let jsonData = JSON.parse(data);
-                            let message = `${username} requested the roll history for the last ${numberOfRollsToShow} rolls:\n\n`;
-                            for(let roll of jsonData){
-                                message += `${roll.rollValue} was rolled by ${roll.username} at ${roll.timestamp}\n`;
-                            }
-                            performFetch({
-                                url: 'api.php?command=savemessage',
-                                method: 'post',
-                                data: {
-                                    username: "SYSTEM MESSAGE",
-                                    message: message
-                                },
-                                success: function (data) {
-                                },
-                                error: function (error) {
-                                }
-                            })
-                        },
-                        error: function (error) {
-                            console.log("ERROR:", error);
-                        }
+                        success: function (data) {},
+                        error: function (error) {}
                     })
                 }
                 
@@ -419,6 +380,60 @@
                 message_input_textbox.value = '';
             }
 
+            //handle /coinflip command
+            else if(message_input_textbox.value == "/coinflip"){
+                message_input_textbox.disabled = true;
+                performFetch({
+                    url: 'api.php?command=coinflip',
+                    method: 'post',
+                    data: {
+                        username: username
+                    },
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (error) {}
+                })
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
+            }
+
+            //handle /coinfliphistory command
+            else if(message_input_textbox.value.startsWith("/coinfliphistory")){
+                message_input_textbox.disabled = true;
+                let numberOfCoinFlipsToShow = message_input_textbox.value.split(" ")[1];
+                if(!numberOfCoinFlipsToShow){
+                    numberOfCoinFlipsToShow = 10;
+                }
+                
+                if(isNaN(numberOfCoinFlipsToShow)){
+                    createMessage({
+                        username: "(private) SYSTEM MESSAGE",
+                        message: "Number of coin flips must be an integer",
+                        privateMessage: true
+                    })
+                }else{
+                    performFetch({
+                        url: 'api.php?command=coinfliphistory',
+                        method: 'post',
+                        data: {
+                            username: username,
+                            numberOfCoinFlipsToShow: numberOfCoinFlipsToShow
+                        },
+                        success: function (data) {},
+                        error: function (error) {}
+                    })
+                }
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
+            }
+            
+            //handle /piratetext command
+            else if(message_input_textbox.value.startsWith("/piratetext")){
+                message_input_textbox.disabled = true;
+       
+            }
+            
             else{
                 // disable the text box so the user can't modify it while the request 
                 // to save the message is being processed by the server

@@ -108,7 +108,6 @@
         }
     }
 
-    // API call to roll a 100-sided die
     else if ($_GET['command'] == 'roll' && isset($_POST['username'])) {
         // CREATE TABLE dieRolls (id INTEGER PRIMARY KEY, username TEXT, rollValue INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP);
         $rollValue = rand(1, 100);
@@ -118,10 +117,14 @@
         $statement->bindValue(':rollValue', $rollValue);
         $result = $statement->execute();
         if ($result) {
-            print $rollValue;
-        } else {
-            print "An error occurred while rolling the die.";
-        }
+            $message = $_POST['username'] . " rolled a " . $rollValue . " on a 100-sided die\n\n";
+            $sql = "INSERT INTO messages (username, message) VALUES (:username, :message)";
+            $statement = $db->prepare($sql);
+            $statement->bindValue(':username', 'SYSTEM MESSAGE');
+            $statement->bindValue(':message', $message);
+            $result = $statement->execute();
+            $id = $db->lastInsertRowID();
+        } 
     }
 
     else if ($_GET['command'] == 'rollhistory' && isset($_POST['username']) && isset($_POST['numberOfRollsToShow'])) {
@@ -138,7 +141,58 @@
                 $pair['timestamp'] = $row[2];
                 array_push($send_back, $pair);
             }
-            print json_encode($send_back);
+            $message = $_POST['username'] . " requested the roll history for the last " . $_POST['numberOfRollsToShow'] . " rolls:\n\n";
+            foreach ($send_back as $roll) {
+                $message .= $roll['username'] . " rolled a " . $roll['rollValue'] . " on a 100-sided die at " . $roll['timestamp'] . "\n";
+            }
+            $sql = "INSERT INTO messages (username, message) VALUES (:username, :message)";
+            $statement = $db->prepare($sql);
+            $statement->bindValue(':username', 'SYSTEM MESSAGE');   
+            $statement->bindValue(':message', $message);
+            $result = $statement->execute();
+            $id = $db->lastInsertRowID();
+        }
+    }
+
+    else if ($_GET['command'] == 'coinflip' && isset($_POST['username'])) {
+        $coinFlip = rand(0, 1);
+        $message = $_POST['username'] . " flipped a coin - " . ($coinFlip ? "Heads" : "Tails") . "!\n\n";
+        // CREATE TABLE coinFlips (    id INTEGER PRIMARY KEY AUTOINCREMENT,    head INTEGER,    tail INTEGER);
+        $sql = "INSERT INTO coinFlips (head, tail) VALUES (:head, :tail)";
+        $statement = $db->prepare($sql);
+        $statement->bindValue(':head', $coinFlip);
+        $statement->bindValue(':tail', !$coinFlip);
+        $result = $statement->execute();
+        if($result){
+            $sql = "INSERT INTO messages (username, message) VALUES (:username, :message)";
+            $statement = $db->prepare($sql);
+            $statement->bindValue(':username', 'SYSTEM MESSAGE');
+            $statement->bindValue(':message', $message);
+            $result = $statement->execute();
+            $id = $db->lastInsertRowID();
+        }
+    }
+
+    else if ($_GET['command'] == 'coinfliphistory' && isset($_POST['username']) && isset($_POST['numberOfCoinFlipsToShow'])) {
+        $sql = "SELECT head, tail FROM coinFlips ORDER BY id DESC LIMIT :numberOfCoinFlipsToShow";
+        $statement = $db->prepare($sql);
+        $statement->bindValue(':numberOfCoinFlipsToShow', $_POST['numberOfCoinFlipsToShow']);
+        $result = $statement->execute();
+        if($result){
+            $flipHistory = [];
+            while ($row = $result->fetchArray()) {
+                $flipHistory['head'] += $row[0];
+                $flipHistory['tail'] += $row[1];
+            }
+            $message = $_POST['username'] . " requested the coin flip history for the last " . $_POST['numberOfCoinFlipsToShow'] . " flips:\n\n";
+            $message .= "Heads: " . $flipHistory['head'] . "\n";
+            $message .= "Tails: " . $flipHistory['tail'] . "\n";
+            $sql = "INSERT INTO messages (username, message) VALUES (:username, :message)";
+            $statement = $db->prepare($sql);
+            $statement->bindValue(':username', 'SYSTEM MESSAGE');
+            $statement->bindValue(':message', $message);    
+            $result = $statement->execute();
+            $id = $db->lastInsertRowID();   
         }
     }
 
