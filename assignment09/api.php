@@ -75,37 +75,36 @@
     }
 
     else if ($_GET['command'] == 'authenticate' && isset($_POST['username']) && isset($_POST['password'])) {
-        $sql = "SELECT username, password FROM users WHERE (username = :username)";
-        $statement = $db->prepare($sql);
-        $statement->bindValue(':username', $_POST['username']);
-        $result = $statement->execute();
-        $send_back = [];
-        if($result){
-            while ($row = $result->fetchArray()) {
-                $userpair = [];
-                $userpair['username'] = $row[0];
-                $userpair['password'] = $row[1];
-
-                // push the object onto the 'messages' array
-                array_push($send_back, $userpair);
-            }
-            print json_encode($send_back);
-        }else{
-            print "An error occured while authenticating user.";
-        }
-    }
-
-    else if ($_GET['command'] == 'addnewuser' && isset($_POST['username']) && isset($_POST['password'])) {
-        $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
+        $sql = "SELECT COUNT(*) FROM users WHERE (username = :username AND password = :password)";
         $statement = $db->prepare($sql);
         $statement->bindValue(':username', $_POST['username']);
         $statement->bindValue(':password', $_POST['password']);
         $result = $statement->execute();
-        if($result){
-            print "php saved user name";
+        $count = $result->fetchArray(SQLITE3_NUM)[0];
+        if($count == 1){
+            print "success";
         }else{
-            print "An error occured while adding new user.";
+            $sql = "SELECT COUNT(*) FROM users WHERE (username = :username)";
+            $statement = $db->prepare($sql);
+            $statement->bindValue(':username', $_POST['username']);
+            $res = $statement->execute();
+            $usernameCheck = $res->fetchArray(SQLITE3_NUM)[0];
+            if($usernameCheck == 0){
+                $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
+                $statement = $db->prepare($sql);
+                $statement->bindValue(':username', $_POST['username']);
+                $statement->bindValue(':password', $_POST['password']);
+                $saveCheck = $statement->execute();
+                if($saveCheck){
+                    print "new";
+                }else{
+                    print "An error occured while adding new user.";
+                }
+            }else{
+               print "wrong"; 
+            }
         }
+
     }
 
     else if ($_GET['command'] == 'roll' && isset($_POST['username'])) {

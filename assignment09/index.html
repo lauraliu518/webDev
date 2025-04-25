@@ -96,6 +96,7 @@
             if (panel_login_username_textbox.value.length == 0 || panel_login_password_textbox.value.length == 0) {
                 panel_login_error_missinginfo.classList.remove('hidden');
                 panel_login_error_incorrect.classList.add('hidden');
+                console.log("missing info");
             }
 
             // form is filled out, allow them to log in
@@ -109,35 +110,20 @@
                         password: panel_login_password_textbox.value
                     },
                     success: function (data) {
-                        let jsonData = JSON.parse(data);
-
-                        //first time user
-                        if(jsonData.length == 0){
-                            console.log("new user");
-                            performFetch({
-                                url: 'api.php?command=addnewuser',
-                                method: 'post',
-                                data: {
-                                    username: panel_login_username_textbox.value
-                                },
-                                success: function (data) {
-                                    console.log("new user saved");
-                                },
-                                error: function (error) {
-                                    console.log("ERROR: An error occurred while saving the new user");
-                                }
-                            })
+                        if(data == "success" || data == "new"){
                             username = panel_login_username_textbox.value;
                             panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
-                        }
-                        //returning user, check password
-                        else{
-                            if (panel_login_password_textbox.value == jsonData[0].password){
-                                username = panel_login_username_textbox.value;
-                                panel_login.style.display = 'none'; /* need to use inline styles here due to display: flex */
-                            }else{
-                                panel_login_error_incorrect.classList.remove('hidden');
-                            }
+                            panel_login_error_missinginfo.classList.add('hidden');
+                            panel_login_error_incorrect.classList.add('hidden');
+                            panel_login_username_textbox.value = '';
+                            panel_login_password_textbox.value = '';
+                        }else if(data == "wrong"){
+                            panel_login_error_incorrect.classList.remove('hidden');
+                            panel_login_error_missinginfo.classList.add('hidden');
+                            panel_login_username_textbox.value = '';
+                            panel_login_password_textbox.value = '';
+                        }else{
+                            console.log(data);
                         }
                     },
                     error: function (error) {
@@ -232,7 +218,7 @@
                 console.log("sys message detected");
                 createMessage({
                     username: "(private) SYSTEM MESSAGE",
-                    message: "system message details\n/roll - Roll a 100-sided die\n/rollhistory [n] - Show the last n rolls (default 10)",
+                    message: "system message details\n/roll - Roll a 100-sided die\n/rollhistory [n] - Show the last n rolls (default 10)\n/magic8ball [question] - Ask a question to the magic 8 ball\n/define [word] - Get the definition of a word\n/quote - Get a random quote\n/coinflip - Flip a coin\n/coinfliphistory [n] - Show the history of the last n coin flips (default 10)",
                     privateMessage: true
                 })
                 message_input_textbox.disabled = false;
@@ -251,6 +237,8 @@
                     success: function (data) {},
                     error: function (error) {}
                 });
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
             }
 
             //handle /rollhistory command 
@@ -351,8 +339,6 @@
                         }
                     }
                     fetchDefinition();
-                    
-
                 }
                 message_input_textbox.disabled = false;
                 message_input_textbox.value = '';   
@@ -535,7 +521,7 @@
                 url: 'api.php?command=savemessage',
                 method: 'post',
                 data: {
-                    username: username,
+                    username: "SYSTEM MESSAGE",
                     message: message
                 },
                 success: function (data) {
