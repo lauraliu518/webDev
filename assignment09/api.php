@@ -124,6 +124,24 @@
         }
     }
 
+    else if ($_GET['command'] == 'rollhistory' && isset($_POST['username']) && isset($_POST['numberOfRollsToShow'])) {
+        $sql = "SELECT username, rollValue, timestamp FROM dieRolls ORDER BY id DESC LIMIT :numberOfRollsToShow";
+        $statement = $db->prepare($sql);
+        $statement->bindValue(':numberOfRollsToShow', $_POST['numberOfRollsToShow']);
+        $result = $statement->execute();
+        if($result){
+            $send_back = [];
+            while ($row = $result->fetchArray()) {
+                $pair = [];
+                $pair['username'] = $row[0];
+                $pair['rollValue'] = $row[1];
+                $pair['timestamp'] = $row[2];
+                array_push($send_back, $pair);
+            }
+            print json_encode($send_back);
+        }
+    }
+
     // invalid command
     else {
         print "error";

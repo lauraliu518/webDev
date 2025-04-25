@@ -263,6 +263,54 @@
                     }
                 });
             }
+
+            else if(message_input_textbox.value.startsWith("/rollhistory")){
+                message_input_textbox.disabled = true;
+
+                let numberOfRollsToShow = message_input_textbox.value.split(" ")[1];
+                if(isNaN(numberOfRollsToShow)){
+                    createMessage({
+                        username: "(private) SYSTEM MESSAGE",
+                        message: "Number of rolls must be an integer",
+                        privateMessage: true
+                    })
+                }else{
+                    performFetch({
+                        url: 'api.php?command=rollhistory',
+                        method: 'post',
+                        data: {
+                            username: username,
+                            numberOfRollsToShow: numberOfRollsToShow
+                        },
+                        success: function (data) {
+                            let jsonData = JSON.parse(data);
+                            let message = `${username} requested the roll history for the last ${numberOfRollsToShow} rolls:\n\n`;
+                            for(let roll of jsonData){
+                                message += `${roll.rollValue} was rolled by ${roll.username} at ${roll.timestamp}\n`;
+                            }
+                            performFetch({
+                                url: 'api.php?command=savemessage',
+                                method: 'post',
+                                data: {
+                                    username: "SYSTEM MESSAGE",
+                                    message: message
+                                },
+                                success: function (data) {
+                                },
+                                error: function (error) {
+                                }
+                            })
+                        },
+                        error: function (error) {
+                            console.log("ERROR:", error);
+                        }
+                    })
+                }
+                
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
+            }
+            
      
             //condition2
             else if(message_input_textbox.value.startsWith("/magic8ball")){
