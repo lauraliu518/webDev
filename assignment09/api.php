@@ -108,6 +108,22 @@
         }
     }
 
+    // API call to roll a 100-sided die
+    else if ($_GET['command'] == 'roll' && isset($_POST['username'])) {
+        // CREATE TABLE dieRolls (id INTEGER PRIMARY KEY, username TEXT, rollValue INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP);
+        $rollValue = rand(1, 100);
+        $sql = "INSERT INTO dieRolls (username, rollValue) VALUES (:username, :rollValue)";
+        $statement = $db->prepare($sql);
+        $statement->bindValue(':username', $_POST['username']);
+        $statement->bindValue(':rollValue', $rollValue);
+        $result = $statement->execute();
+        if ($result) {
+            print $rollValue;
+        } else {
+            print "An error occurred while rolling the die.";
+        }
+    }
+
     // invalid command
     else {
         print "error";

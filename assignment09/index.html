@@ -221,12 +221,49 @@
                 console.log("sys message detected");
                 createMessage({
                     username: "(private) SYSTEM MESSAGE",
-                    message: "system message details",
+                    message: "system message details\n/roll - Roll a 100-sided die\n/rollhistory [n] - Show the last n rolls (default 10)",
                     privateMessage: true
                 })
                 message_input_textbox.disabled = false;
                 message_input_textbox.value = '';
             }
+            //handle /roll command
+            else if(message_input_textbox.value == "/roll"){
+                message_input_textbox.disabled = true;
+                performFetch({
+                    url: 'api.php?command=roll',
+                    method: 'post',
+                    data: {
+                        username: username
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        let message = `${username} rolled a ${data} on a 100-sided die`;
+                        performFetch({
+                            url: 'api.php?command=savemessage',
+                            method: 'post',
+                            data: {
+                                username: "SYSTEM MESSAGE",
+                                message: message
+                            },
+                            success: function (data) {
+                                console.log(data);
+                            },
+                            error: function (error) {
+                                console.log("ERROR:", error);
+                            }
+                        })
+                        message_input_textbox.disabled = false;
+                        message_input_textbox.value = '';
+                    },
+                    error: function (error) {
+                        console.log("ERROR:", error);
+                        message_input_textbox.disabled = false;
+                        message_input_textbox.value = '';
+                    }
+                });
+            }
+     
             //condition2
             else if(message_input_textbox.value.startsWith("/magic8ball")){
                 message_input_textbox.disabled = true;
