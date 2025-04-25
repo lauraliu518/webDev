@@ -63,6 +63,7 @@
         let interactingFlag = false;
         let randomResponse;
         let listeningForMagic8Ball = false;
+        let randomQuote;
 
         async function fetchAndStoreRandomResponses() {
             try {
@@ -75,6 +76,17 @@
             }
         }
         fetchAndStoreRandomResponses();
+
+        async function fetchAndStoreQuotes() {
+            try {
+                const response = await fetch("datasets/Database-Quotes-JSON/quotes.json");
+                const jsonData = await response.json();
+                randomQuote = jsonData;
+            } catch (error) {
+                console.error("Failed to fetch and store quotes:", error);      
+            }
+        }
+        fetchAndStoreQuotes();
 
         // login button
         panel_login_submit_button.addEventListener('click', function (e) {
@@ -143,7 +155,6 @@
             interactingFlag = false;
         }
     
-
         // function to retrieve previously posted messages
         async function getMessages() {
 
@@ -206,6 +217,7 @@
                 return;
             }
             
+            //listen for /magic8ball command input
             if(listeningForMagic8Ball){
                 message_input_textbox.disabled = true;
                 magic8ball(message_input_textbox.value);
@@ -226,6 +238,7 @@
                 message_input_textbox.disabled = false;
                 message_input_textbox.value = '';
             }
+            
             //handle /roll command
             else if(message_input_textbox.value == "/roll"){
                 message_input_textbox.disabled = true;
@@ -263,6 +276,7 @@
                 });
             }
 
+            //handle /rollhistory command 
             else if(message_input_textbox.value.startsWith("/rollhistory")){
                 message_input_textbox.disabled = true;
 
@@ -310,7 +324,7 @@
                 message_input_textbox.value = '';
             }
             
-            //condition2
+            //handle /magic8ball command 
             else if(message_input_textbox.value.startsWith("/magic8ball")){
                 message_input_textbox.disabled = true;
                 if(message_input_textbox.value.length == 11){
@@ -330,6 +344,7 @@
 
             }
             
+            //handle /define command
             else if(message_input_textbox.value.startsWith("/define")){
                 message_input_textbox.disabled = true;
                 let word = message_input_textbox.value.split(" ")[1];
@@ -380,6 +395,28 @@
                 }
                 message_input_textbox.disabled = false;
                 message_input_textbox.value = '';   
+            }
+
+            //handle /quote command
+            else if(message_input_textbox.value == "/quote"){
+                message_input_textbox.disabled = true;
+                let quote = randomQuote[Math.floor(Math.random() * randomQuote.length)];
+                let message = `${username} requested a quote!\n\n`;
+                message += `${quote.quoteText}\n`;
+                message += `- ${quote.quoteAuthor}`;
+
+                performFetch({
+                    url: 'api.php?command=savemessage',
+                    method: 'post',
+                    data: {
+                        username: "SYSTEM MESSAGE",
+                        message: message
+                    },
+                    success: function (data) {},
+                    error: function (error) {}
+                })
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
             }
 
             else{
