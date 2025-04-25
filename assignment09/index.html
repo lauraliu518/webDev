@@ -98,7 +98,6 @@
                     },
                     success: function (data) {
                         let jsonData = JSON.parse(data);
-                        console.log(jsonData);
 
                         //first time user
                         if(jsonData.length == 0){
@@ -311,7 +310,6 @@
                 message_input_textbox.value = '';
             }
             
-     
             //condition2
             else if(message_input_textbox.value.startsWith("/magic8ball")){
                 message_input_textbox.disabled = true;
@@ -332,6 +330,58 @@
 
             }
             
+            else if(message_input_textbox.value.startsWith("/define")){
+                message_input_textbox.disabled = true;
+                let word = message_input_textbox.value.split(" ")[1];
+                let extraContent = message_input_textbox.value.split(" ")[2];
+                if(extraContent){
+                    createMessage({
+                        username: "(private) SYSTEM MESSAGE",
+                        message: "You can only define a single word at a time!",
+                        privateMessage: true
+                    })
+                }else if(!word){
+                    createMessage({
+                        username: "(private) SYSTEM MESSAGE",
+                        message: "You must supply a word to define!",
+                        privateMessage: true
+                    })
+                }else{
+                    let endPoint = `https://api.dictionaryapi.dev/api/v2/entries/en/`;
+                    let url = endPoint + word;
+                    async function fetchDefinition(){
+                        let response = await fetch(url);
+                        let definition = await response.json();
+                        if(definition.title == "No Definitions Found"){
+                            console.log("no definition found");
+                            createMessage({
+                                username: "(private) SYSTEM MESSAGE",
+                                message: word + "could not be defined.",
+                                privateMessage: true
+                            })
+                        }else{
+                            let message = `${username} requested a word definition!\n\n`;
+                            let partOfSpeech = (definition[0].meanings[0].partOfSpeech);
+                            let meaning = (definition[0].meanings[0].definitions[0].definition);
+                            message += `${word} (${partOfSpeech}): ${meaning}`;
+                            performFetch({
+                                url: 'api.php?command=savemessage',
+                                method: 'post',
+                                data: {
+                                    username: "SYSTEM MESSAGE",
+                                    message: message
+                                }
+                            })
+                        }
+                    }
+                    fetchDefinition();
+                    
+
+                }
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';   
+            }
+
             else{
                 // disable the text box so the user can't modify it while the request 
                 // to save the message is being processed by the server
