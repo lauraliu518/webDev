@@ -414,12 +414,17 @@
                 message_input_textbox.value = '';
             }
             
-            //handle /piratetext command
-            else if(message_input_textbox.value.startsWith("/piratetext")){
+            else if(message_input_textbox.value.startsWith("/")){
                 message_input_textbox.disabled = true;
-       
+                createMessage({
+                    username: "(private) SYSTEM MESSAGE",
+                    message: "Unknown command: " + message_input_textbox.value,
+                    privateMessage: true
+                })
+                message_input_textbox.disabled = false;
+                message_input_textbox.value = '';
             }
-            
+
             else{
                 // disable the text box so the user can't modify it while the request 
                 // to save the message is being processed by the server
@@ -513,7 +518,11 @@
         }   
 
         function magic8ball(entireMessage){
-            let userInput = entireMessage;
+            if(entireMessage.startsWith("/magic8ball")){
+                userInput = entireMessage.split(" ")[1];
+            }else{
+                userInput = entireMessage;
+            }
             console.log("magic8 detected: user input: " + userInput);
             let message = `${username} just shook the magic 8 ball!\n Question: ${userInput}\n Answer: ` + randomResponse[parseInt(Math.random() * randomResponse.length)];
 

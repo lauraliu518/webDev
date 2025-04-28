@@ -102,12 +102,6 @@
                 <h3>{{item.title}}</h3>
                 <p>{{item.description}}</p>
 
-                <div class="card-actions">
-                    <button class="light">Edit</button>
-                    <button class="light">
-                        <span v-if="item.completed" @click="markAsActive(item)">Mark as Active</span>
-                        <span v-else @click="markAsComplete(item)">Mark as Complete</span>
-
 
                 <div class="card-actions">
                     <button class="light" @click="showEditPanel(item)">Edit</button>
@@ -217,6 +211,7 @@
 
                 deleteItem: function(item) {
                     this.existingItems.splice(this.existingItems.indexOf(item), 1);
+                    this.updateFilteredItems();
                 },
 
                 showEditPanel: function(item) {
@@ -285,8 +280,11 @@
             },
             mounted: function() {
                 performFetch({
-                    url: 'api.php?command=load',
-                    method: 'POST',
+                    url: 'api.php',
+                    method: 'GET',
+                    data:{
+                        command: 'load'
+                    },
                     success: (data) => {
                         this.existingItems = JSON.parse(data);
                         this.updateFilteredItems();
